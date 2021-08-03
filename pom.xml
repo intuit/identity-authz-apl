@@ -7,18 +7,46 @@
     <name>ABAC Policy Language</name>
     <version>1.0-SNAPSHOT</version>
     <url>http://apl.intuit.com</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/intuit/identity-authz-apl</url>
+        <connection>scm:git:git://github.com/intuit/identity-authz-apl.git</connection>
+        <developerConnection>scm:git:git@github.com:intuit/identity-authz-apl.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <name>Bala Dutt</name>
+            <id>baladutt</id>
+            <organization>Intuit, Inc.</organization>
+            <organizationUrl>http://www.intuit.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Sachin Maheshwari</name>
+            <id>sachinmaheshwari</id>
+            <organization>Intuit, Inc.</organization>
+            <organizationUrl>http://www.intuit.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Ravi Chauhan</name>
+            <id>ravichauhan03</id>
+            <organization>Intuit, Inc.</organization>
+            <organizationUrl>http://www.intuit.com</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
-        <public.repo>https://nexus.intuit.com/nexus/content/groups/public</public.repo>
-        <fallback.repo>http://nexus.intuit.net/nexus/content/groups/public</fallback.repo>
         <!-- JAVA VERSION -->
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- APPLICATION RELATED VERSION & PROPERTIES -->
         <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
-        <central.repo>http://nexus-proxy/nexus/content/groups/public</central.repo>
-        <fallback.repo>http://nexus.intuit.net/nexus/content/groups/public</fallback.repo>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <slf4j.api.version>1.7.30</slf4j.api.version>
@@ -65,61 +93,7 @@
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
     </properties>
 
-    <repositories>
-        <!-- Searched in the order declared, but note: settings.xml has a central-mirror,
-          defined as the same value as ${central.repo}, that catches ALL repos EXCEPT
-          fallback-repo and fallback-plugin-repo. So the entry here for central-repo
-          is not actually used, but is left here because it seems clearer. 20170714LW. -->
-        <repository>
-            <id>public-repo</id>
-            <url>${public.repo}</url>
-            <name>Intuit Nexus Cache</name>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>fallback-repo</id>
-            <url>${fallback.repo}</url>
-            <name>Intuit Nexus Home</name>
-        </repository>
-        <repository>
-            <id>internal-repo</id>
-            <url>https://nexus.intuit.net/artifactory/IBP.Intuit-Releases</url>
-            <name>Intuit Internal Nexus Home</name>
-        </repository>
-    </repositories>
 
-    <pluginRepositories>
-        <!-- Similar note to the above, in <repositories>, 20170714LW. -->
-        <pluginRepository>
-            <id>public-repo</id>
-            <url>${public.repo}</url>
-            <name>Intuit Nexus Cache</name>
-        </pluginRepository>
-        <pluginRepository>
-            <id>fallback-plugin-repo</id>
-            <url>${fallback.repo}</url>
-            <name>Intuit Nexus Home (plugins)</name>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>scm.int.rel.repo</id>
-            <name>Central Nexus repo</name>
-            <url>https://artifact.intuit.com/nexus/content/repositories/IBP.Intuit-Releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>scm.dev.snap.repo</id>
-            <uniqueVersion>false</uniqueVersion>
-            <name>Central Nexus repo</name>
-            <url>http://nexus.intuit.net/nexus/content/repositories/IBP.Intuit-Snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 
     <dependencies>
