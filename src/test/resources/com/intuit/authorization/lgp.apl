@@ -222,7 +222,7 @@ when:
   - action["id"] != null
   - sub[permissions] != null
   - sub["authnLevel"] != null      #  non empty check for authnLevel
-  - matchesAnyIgnoreCase({"Intuit.apd.*","Intuit.consumer.mintcard.*","Intuit.consumer.tax.prep.*","Intuit.consumer.tax.review.*","Intuit.Cto.*","Intuit.devx.appconnection.*","Intuit.devx.application.*","Intuit.devx.developer.*","Intuit.ems.*","Intuit.gbd.*","Intuit.gyb.*","Intuit.homestead.*","Intuit.iam.csr.dev.*","Intuit.iam.csr.tier*","Intuit.iam.identity.addid","Intuit.iam.identity.removeid","Intuit.iam.identity.resetpwd","Intuit.iam.identity.updateid","Intuit.iam.identity.updatepii","Intuit.iam.identity.view","Intuit.iam.oauth2.*","Intuit.iam.provision.*","Intuit.iam.rolemgmt.*","Intuit.idp.opproc.config.*","Intuit.ims.gopayment.*","Intuit.psd.oasis.iris.*","Intuit.qbn.subs.*","Intuit.qbo.tool.*","Intuit.qhg.*","Intuit.Quest.*","Intuit.sb.accountant*","Intuit.sbd.*","Intuit.sbe.*","Intuit.sbg.atlas.dpt.vpd.ViewPiiData","Intuit.sbg.payments.merchantcenter.Accountant","Intuit.sbg.psd.repeatpay.createTransaction","Intuit.vep.client.read","Intuit.vep.expert.offboard","Intuit.vep.firm.create","Intuit.vep.team.delete","Intuit.vep.team.read","Intuit.workforce.team.admin"}, res["id"])
+  - matchesAnyIgnoreCase({"resource1","resource2"}, res["id"])
   - containsAnyIgnoreCase(sub[permissions] , res["id"] + "." + action["id"])
 then:
   - decision=permit
@@ -241,7 +241,7 @@ salience: 1
 when:
   - action["id"] != null
   - sub[permissions] != null
-  - matchesAnyIgnoreCase({"Intuit.apd.*","Intuit.consumer.mintcard.*","Intuit.consumer.tax.prep.*","Intuit.consumer.tax.review.*","Intuit.Cto.*","Intuit.devx.appconnection.*","Intuit.devx.application.*","Intuit.devx.developer.*","Intuit.ems.*","Intuit.gbd.*","Intuit.gyb.*","Intuit.homestead.*","Intuit.iam.csr.dev.*","Intuit.iam.csr.tier*","Intuit.iam.identity.addid","Intuit.iam.identity.removeid","Intuit.iam.identity.resetpwd","Intuit.iam.identity.updateid","Intuit.iam.identity.updatepii","Intuit.iam.identity.view","Intuit.iam.oauth2.*","Intuit.iam.provision.*","Intuit.iam.rolemgmt.*","Intuit.idp.opproc.config.*","Intuit.ims.gopayment.*","Intuit.psd.oasis.iris.*","Intuit.qbn.subs.*","Intuit.qbo.tool.*","Intuit.qhg.*","Intuit.Quest.*","Intuit.sb.accountant*","Intuit.sbd.*","Intuit.sbe.*","Intuit.sbg.atlas.dpt.vpd.ViewPiiData","Intuit.sbg.payments.merchantcenter.Accountant","Intuit.sbg.psd.repeatpay.createTransaction","Intuit.vep.client.read","Intuit.vep.expert.offboard","Intuit.vep.firm.create","Intuit.vep.team.delete","Intuit.vep.team.read","Intuit.workforce.team.admin"}, res["id"])
+  - matchesAnyIgnoreCase({"resource1","resource2"}, res["id"])
   - containsAnyIgnoreCase(sub[permissions] , res["id"] + "." + action["id"]) == false
 then:
   - decision=deny
