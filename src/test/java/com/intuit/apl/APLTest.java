@@ -4,7 +4,7 @@ import com.intuit.apl.model.Result;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
