@@ -1,0 +1,264 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.intuit.apl</groupId>
+    <artifactId>apl</artifactId>
+    <packaging>jar</packaging>
+    <name>ABAC Policy Language</name>
+    <version>1.0-SNAPSHOT</version>
+    <url>http://apl.intuit.com</url>
+
+    <properties>
+        <public.repo>https://nexus.intuit.com/nexus/content/groups/public</public.repo>
+        <fallback.repo>http://nexus.intuit.net/nexus/content/groups/public</fallback.repo>
+        <!-- JAVA VERSION -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- APPLICATION RELATED VERSION & PROPERTIES -->
+        <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
+        <central.repo>http://nexus-proxy/nexus/content/groups/public</central.repo>
+        <fallback.repo>http://nexus.intuit.net/nexus/content/groups/public</fallback.repo>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <slf4j.api.version>1.7.30</slf4j.api.version>
+        <!-- JSON VERSION -->
+        <json.smart.version>2.3</json.smart.version>
+        <gson.version>2.8.6</gson.version>
+        <json.version>20190722</json.version>
+        <!-- APACHE LIBRARY VERSION -->
+        <apache.commons.text.version>1.1</apache.commons.text.version>
+        <apache.commons.logging.version>1.1.3</apache.commons.logging.version>
+        <apache.commons.collection.version>3.2.2</apache.commons.collection.version>
+        <commons.pool2.version>2.6.1</commons.pool2.version>
+        <apache_commons_lang3_version>3.8.1</apache_commons_lang3_version>
+        <!-- OTHER VERSION -->
+        <junit.version>4.12</junit.version>
+        <fest-reflect.version>1.4</fest-reflect.version>
+        <lombok.version>1.16.22</lombok.version>
+        <jackson.databind.version>2.9.5.redhat-001</jackson.databind.version>
+        <proj_jackson_version>2.7.0</proj_jackson_version>
+        <jaxb.version>2.2.11</jaxb.version>
+        <scala.library.version>2.11.12</scala.library.version>
+        <akka.version>2.5.16</akka.version>
+        <cglib.nodep.version>2.2</cglib.nodep.version>
+        <activation.version>1.1.1</activation.version>
+        <aspectjweaver.version>1.9.1</aspectjweaver.version>
+        <unirest.java.version>1.4.9</unirest.java.version>
+        <!-- MAVEN PLUGIN VERSION -->
+        <maven.failsafe.plugin>2.20.1</maven.failsafe.plugin>
+        <maven.dependency.version>2.8</maven.dependency.version>
+        <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
+        <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
+        <maven.watcher.plugin.version>1.6</maven.watcher.plugin.version>
+        <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+        <maven.project.info.reports.plugin.version>2.7</maven.project.info.reports.plugin.version>
+        <maven.shade.plugin.version>2.4.3</maven.shade.plugin.version>
+        <maven.site.plugin.version>3.3</maven.site.plugin.version>
+        <google.guava.version>27.0.1-jre</google.guava.version>
+        <snake.version>1.24</snake.version>
+        <mockito-core.version>2.10.0</mockito-core.version>
+        <testng.version>6.14.3</testng.version>
+        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    </properties>
+
+    <repositories>
+        <!-- Searched in the order declared, but note: settings.xml has a central-mirror,
+          defined as the same value as ${central.repo}, that catches ALL repos EXCEPT
+          fallback-repo and fallback-plugin-repo. So the entry here for central-repo
+          is not actually used, but is left here because it seems clearer. 20170714LW. -->
+        <repository>
+            <id>public-repo</id>
+            <url>${public.repo}</url>
+            <name>Intuit Nexus Cache</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>fallback-repo</id>
+            <url>${fallback.repo}</url>
+            <name>Intuit Nexus Home</name>
+        </repository>
+        <repository>
+            <id>internal-repo</id>
+            <url>https://nexus.intuit.net/artifactory/IBP.Intuit-Releases</url>
+            <name>Intuit Internal Nexus Home</name>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <!-- Similar note to the above, in <repositories>, 20170714LW. -->
+        <pluginRepository>
+            <id>public-repo</id>
+            <url>${public.repo}</url>
+            <name>Intuit Nexus Cache</name>
+        </pluginRepository>
+        <pluginRepository>
+            <id>fallback-plugin-repo</id>
+            <url>${fallback.repo}</url>
+            <name>Intuit Nexus Home (plugins)</name>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>scm.int.rel.repo</id>
+            <name>Central Nexus repo</name>
+            <url>https://artifact.intuit.com/nexus/content/repositories/IBP.Intuit-Releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>scm.dev.snap.repo</id>
+            <uniqueVersion>false</uniqueVersion>
+            <name>Central Nexus repo</name>
+            <url>http://nexus.intuit.net/nexus/content/repositories/IBP.Intuit-Snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>4.3.22.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.23</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.api.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <pluginManagement>
+            <plugins>
+                 <plugin>
+                     <groupId>org.jacoco</groupId>
+                     <artifactId>jacoco-maven-plugin</artifactId>
+                     <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <forkCount>4</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <argLine>${surefireArgLine} -Xmx4096m</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-checkstyle-plugin</artifactId>
+               <version>3.1.2</version>
+               <dependencies>
+                 <dependency>
+                   <groupId>com.puppycrawl.tools</groupId>
+                   <artifactId>checkstyle</artifactId>
+                   <version>8.41.1</version>
+                 </dependency>
+               </dependencies>
+               <configuration>
+                 <configLocation>google_checks.xml</configLocation>
+                 <encoding>UTF-8</encoding>
+                 <consoleOutput>true</consoleOutput>
+                 <failsOnError>true</failsOnError>
+                 <linkXRef>false</linkXRef>
+               </configuration>
+               <executions>
+                 <execution>
+                   <id>validate</id>
+                   <phase>validate</phase>
+                   <goals>
+                     <goal>check</goal>
+                   </goals>
+                 </execution>
+               </executions>
+             </plugin>
+             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <dataFile>${project.testresult.directory}/coverage/jacoco/jacoco.exec</dataFile>
+                    <outputDirectory>${project.testresult.directory}/coverage/jacoco</outputDirectory>
+                    <!-- Sets the path to the file which contains the execution
+                        data. -->
+                    <destFile>${project.testresult.directory}/coverage/jacoco/jacoco.exec</destFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the name of the property containing
+                                the settings for JaCoCo runtime agent. -->
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

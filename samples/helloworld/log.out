@@ -1,0 +1,82 @@
+0    [com.sample.apl.HelloWorld.main()] INFO  com.intuit.apl.engine.ParsingRules  - There are no default rules
+2    [com.sample.apl.HelloWorld.main()] INFO  com.intuit.apl.engine.ParsingRules  - There are no default rules
+7    [com.sample.apl.HelloWorld.main()] INFO  com.intuit.apl.engine.ParsingChecks  - Salience of Deny must be higher then Permit
+398  [com.sample.apl.HelloWorld.main()] INFO  com.intuit.apl.engine.APLInterpreter  - 
+------------------
+APL Explain :
+------------------
+
+    Inputs:
+
+         Subject:                role -> admin         
+         Resource:               id -> CustomDetailedReport         
+         Action:                 name -> execute id ->         
+         Environment:            product -> QBO sku -> BASIC        
+
+
+    Variables: 
+
+        Number of variables:     18
+
+                                 product
+                                 role
+                                 bookkeeper
+                                 CustomDetailedReport
+                                 admin
+                                 BASIC
+                                 ADVANCED
+                                 0
+                                 null
+                                 2019-05-15
+                                 2019-05-17
+                                 resOwnerId
+                                 yyyy-MM-dd
+                                 id
+                                 sku
+                                 user
+                                 QBO
+                                 PLUS
+
+
+    Stats:
+
+         Rules:                  4
+         Rules Fired:            1
+         Conditions:             15
+         UniqueConditions:       10
+         Actions:                6
+         ExecutedActions:        2
+         HalfBakedRules:         1
+         Parsing(µs):            134413 
+         Execution(µs):          153 
+         ConditionExecution(µs): 121 
+         RuleExecution(µs):      19 
+
+    Execution:
+
+        
+STEP       CONDITION                                                              OUTPUT    
+-------------------------------------------------------------------------------------------------------
+0          containsAnyIgnoreCase({"admin", "user", "bookkeeper"}, sub["role"])    T         
+1          env["product"] == "QBO"                                                T         
+3          res["id"] == "CustomDetailedReport"                                    T         
+5          env["sku"] == "BASIC"                                                  T         
+2          env["sku"] == "PLUS"                                                   F         
+4          sub["id"] != null                                                      F         
+-------------------------------------------------------------------------------------------------------
+
+
+    Rules fired:
+
+                                 Name : Deny CustomDetailedReport for QBO Basic
+                                 Description : rule description
+
+    Decision:                    DENY
+
+    Always false conditions:
+
+                                 Half baked rule
+
+        
+
+

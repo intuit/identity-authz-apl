@@ -1,0 +1,67 @@
+l1: identity
+l2: authz
+service_name: authz-java-sdk
+asset_id: 8794421764731697751
+asset_alias: Intuit.identity.authz.authzjavasdk
+
+code_repo: github.intuit.com/identity-authz/authz-java-sdk.git
+deploy_repo: github.intuit.com/identity-authz/abac-service-deployment.git
+
+argocd_server: identity.argocd.tools-k8s-prd.a.intuit.com:443
+argocd_password: argocd-abac-service
+argocd_project: identity-authz-abac-service
+argocd_project_enabled: true
+
+registry: docker.artifactory.a.intuit.com
+repo: identity/authz/authz-java-sdk
+
+# change this to false once ready for PRD
+preprodOnly: false
+snow_application_name: "Identity ABAC Service"
+
+# change this to true for enable Code Analysis stage
+SonarQubeAnalysis: false
+
+# change this to true for stop your pipeline in quality gate error
+SonarQubeEnforce: false
+
+environments:
+  qalb-usw2:
+    ingress_endpoint: https://identity-authz-qal-abac-service.iip-core-ppd-usw2.iks.a.intuit.com
+    cluster: https://api-iip-core-ppd-usw2-clu-0bupph-426861653.us-west-2.elb.amazonaws.com
+    namespace: identity-authz-abac-service-usw2-ppd-qalb
+    region: usw2
+    iks_type: ppd
+    manifest_format: Kustomize
+    swimlane: b
+    env: qal
+
+  e2eb-usw2:
+    ingress_endpoint: https://identity-authz-e2e-abac-service.iip-core-ppd-usw2.iks.a.intuit.com
+    cluster: https://api-iip-core-ppd-usw2-clu-0bupph-426861653.us-west-2.elb.amazonaws.com
+    namespace: identity-authz-abac-service-usw2-ppd-e2eb
+    region: usw2
+    iks_type: ppd
+    manifest_format: Kustomize
+    swimlane: b
+    env: e2e
+
+  prfb-usw2:
+    ingress_endpoint: https://identity-authz-prf-abac-service.iip-core-ppd-usw2.iks.a.intuit.com
+    cluster: https://api-iip-core-ppd-usw2-clu-0bupph-426861653.us-west-2.elb.amazonaws.com
+    namespace: identity-authz-abac-service-usw2-ppd-prfb
+    region: usw2
+    iks_type: ppd
+    manifest_format: Kustomize
+    swimlane: b
+    env: prf
+
+  prdb-usw2:
+    ingress_endpoint: https://identity-authz-prd-abac-service.iip-core-prod-usw2.iks.a.intuit.com
+    cluster: https://api-iip-core-prod-usw2-cl-d13qit-1576117646.us-west-2.elb.amazonaws.com
+    namespace: identity-authz-abac-service-usw2-prd-prdb
+    region: usw2
+    iks_type: prd
+    manifest_format: Kustomize
+    swimlane: b
+    env: prd

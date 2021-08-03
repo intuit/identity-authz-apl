@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <appender name="FILE-LOG-OUT"
+              class="ch.qos.logback.core.FileAppender">
+        <file>target/test.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %mdc - %msg%n
+            </Pattern>
+        </encoder>
+
+    </appender>
+
+    <logger name="com.intuit" level="trace"
+            additivity="false">
+        <appender-ref ref="FILE-LOG-OUT" />
+    </logger>
+
+    <logger name="akka" level="info"
+            additivity="false">
+        <appender-ref ref="FILE-LOG-OUT" />
+    </logger>
+    <logger name="*" level="trace"
+            additivity="false">
+        <appender-ref ref="FILE-LOG-OUT" />
+    </logger>
+
+    <root level="trace">
+        <appender-ref ref="FILE-LOG-OUT" />
+    </root>
+
+</configuration>
