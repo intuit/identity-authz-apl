@@ -170,12 +170,3 @@ APL Explain :
 
 
         Rete Execute Process:
-
-# Build
-
-https://build.intuit.com/identity/job/AplBuildjob/job/master/
-
-# Design of APL
-
-* [ABAC Policy Language (APL) Design](https://wiki.intuit.com/pages/viewpage.action?pageId=493493276)
-* [ABAC Policy Language implementation](src/)
