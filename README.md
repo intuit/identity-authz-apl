@@ -1,4 +1,4 @@
-# ABAC Policy Language [![Build Status](https://build.intuit.com/identity/buildStatus/buildIcon?job=AplBuildJob/master)](https://build.intuit.com/identity/job/AplBuildjob/job/master/)
+# ABAC Policy Language [![Build Status](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml/badge.svg)](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml)
 
    **_Secure, fast and reliable policies are protecting your resources_**
    
