@@ -31,7 +31,7 @@ class Execution {
   LinkedHashMap<String, Integer> trueEvaluatedExpressions = new LinkedHashMap<>();
   LinkedHashMap<String, Integer> falseEvaluatedExpressions = new LinkedHashMap<>();
   LinkedHashMap<String, String> firedRulesDescription = new LinkedHashMap<>();
-  LinkedHashMap<BetaNode, Integer> firedRules = new LinkedHashMap<>();
+  LinkedHashMap<BetaNode, Integer> readyToFireRules = new LinkedHashMap<>();
   /* Rules ordered by salience */
   PriorityQueue<Integer> prioritySalienceRules = null;
   AuthZDecision decision = AuthZDecision.INDETERMINATE;

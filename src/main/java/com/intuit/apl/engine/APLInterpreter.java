@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class APLInterpreter <
   private boolean debug = true;
   public static final String DEBUG_SYSTEM_PROPERTY = "APLEngine.debug";
   private PriorityQueue<RuleDefinition> ruleDefinitions = null;
-  private LinkedHashMap<Expression, List<BetaNode>> expressionToAlphaNodesMap =
+  private LinkedHashMap<Expression, List<BetaNode>> alphaToBetaNodesMap =
       new LinkedHashMap<>();
   private ArrayList<Expression> variableAssignmentExpressions = new ArrayList<>();
   private LinkedHashMap<BetaNode, List<RuleDefinition>> betaNodesToRuleDefinitionMap =
@@ -240,7 +241,7 @@ public class APLInterpreter <
         List<BetaNode> betaNodeList = null;
 
         if (expr != null) {
-          betaNodeList = expressionToAlphaNodesMap.get(expr);
+          betaNodeList = alphaToBetaNodesMap.get(expr);
         } else {
           expressionStringToAlphaNodesMap.put(conditionExpr.getExpressionString(), conditionExpr);
           expr = conditionExpr;
@@ -251,7 +252,7 @@ public class APLInterpreter <
           }
           if (betaNodeList == null) {
             betaNodeList = new ArrayList<>();
-            expressionToAlphaNodesMap.put(expr, betaNodeList);
+            alphaToBetaNodesMap.put(expr, betaNodeList);
           }
         }
       }
@@ -269,7 +270,7 @@ public class APLInterpreter <
           continue;
 
         Expression expr = expressionStringToAlphaNodesMap.get(conditionExpr.getExpressionString());
-        List<BetaNode> betaNodes = expressionToAlphaNodesMap.get(expr);
+        List<BetaNode> betaNodes = alphaToBetaNodesMap.get(expr);
         betaNodes.add(newBetaNodeForThisRule);
         newBetaNodeForThisRule.addCondition();
       }
@@ -297,8 +298,8 @@ public class APLInterpreter <
       dumpStringBuffer.append("                                     FileName: ").append(fileName)
           .append("\n");
     }
-    for (Expression conditionExpr : expressionToAlphaNodesMap.keySet()) {
-      List<BetaNode> betaNodes = expressionToAlphaNodesMap.get(conditionExpr);
+    for (Expression conditionExpr : alphaToBetaNodesMap.keySet()) {
+      List<BetaNode> betaNodes = alphaToBetaNodesMap.get(conditionExpr);
       dumpStringBuffer.append("\n                                    AlphaNode: ")
           .append(conditionExpr).append("\n");
       dumpStringBuffer.append("                                             : ")
@@ -550,7 +551,8 @@ public class APLInterpreter <
   }
 
   /**
-   * +
+   * The main Rete based algorithm that evaluates the rule files
+   * 
    *
    * @param execution Execution object
    * @param APLContext APLContext
@@ -573,9 +575,9 @@ public class APLInterpreter <
      * For all the variables in Variable Assignments put all the variable and their value in the
      * variable Mapping map
      */
-    for (Expression conditionExpr : expressionToAlphaNodesMap.keySet()) {
+    for (Entry<Expression, List<BetaNode>> entry : alphaToBetaNodesMap.entrySet()) {
 
-      /* If no beta node then return */
+      //1. If no beta node at all, no reason going forward
       if (execution.betaNodesList.isEmpty()) {
         executeDefaultRules(execution, APLContext);
         /* PolicyFile Execution time ends at this point */
@@ -584,42 +586,40 @@ public class APLInterpreter <
         return execution;
       }
 
-      List<BetaNode> bNodes = expressionToAlphaNodesMap.get(conditionExpr);
-      int noCorrespondingBetaNode = 1;
-
-      /* Checking if there exists any active beta node for a particular alpha node */
-      for (BetaNode betaNode : bNodes) {
+      
+      //2. We do not evaluate alpha nodes with no remaining beta nodes
+      // We would move to next alpha node
+      boolean hasBetaNode = false;
+      for (BetaNode betaNode : entry.getValue()) {
         if (execution.betaNodesList.get(betaNode) != null) {
-          noCorrespondingBetaNode = 0;
+          hasBetaNode = true;
           break;
         }
       }
-
-      /* If there is no beta node for a alpha node then move to next alpha node */
-      if (noCorrespondingBetaNode == 1)
+      if (!hasBetaNode)
         continue;
 
-      SpelExpression exprV = (SpelExpression) conditionExpr;
+      Expression alphaNode = entry.getKey();
+      SpelExpression exprV = (SpelExpression) alphaNode;
       int childCount = exprV.getAST().getChildCount();
       Object truthValue;
 
       /* If only literals are present then evaluate the conditionExpression */
       if (childCount == 0) {
-        truthValue = conditionExpr.getValue();
+        truthValue = alphaNode.getValue();
       } else {
         /* check for invalid function usage */
-        isValidExpression(ctx, conditionExpr);
-        truthValue = conditionExpr.getValue(ctx);
+        isValidExpression(ctx, alphaNode);
+        truthValue = alphaNode.getValue(ctx);
       }
       /*
        * If the condition expression evaluates to false then put the condition expression in the
        * falseEvaluatedExpressions map
        */
       if ((truthValue instanceof Boolean) && !(Boolean) truthValue) {
-        bNodes = expressionToAlphaNodesMap.get(conditionExpr);
 
         /* Removing all the corresponding beta nodes for the alpha node */
-        for (BetaNode betaNode : bNodes) {
+        for (BetaNode betaNode : entry.getValue()) {
 
           if (null != execution.betaNodesList.get(betaNode)) {
             execution.prioritySalienceRules.remove(betaNode.getSalience());
@@ -627,23 +627,23 @@ public class APLInterpreter <
           }
         }
 
-        execution.falseEvaluatedExpressions.put(conditionExpr.getExpressionString(),
+        execution.falseEvaluatedExpressions.put(alphaNode.getExpressionString(),
             execution.executionStepNo++);
       } else if ((truthValue instanceof Boolean) && (Boolean) truthValue) {
-        execution.trueEvaluatedExpressions.put(conditionExpr.getExpressionString(),
+        execution.trueEvaluatedExpressions.put(alphaNode.getExpressionString(),
             execution.executionStepNo++);
-        List<BetaNode> betaNodes = expressionToAlphaNodesMap.get(conditionExpr);
-        for (BetaNode betaNode : betaNodes) {
+        for (BetaNode betaNode : entry.getValue()) {
           betaNode.setTrue(execution);
           if (betaNode.isReady(execution)) {
 
             if (!execution.prioritySalienceRules.isEmpty()
                 && execution.prioritySalienceRules.peek() > betaNode.getSalience()) {
-              execution.firedRules.put(betaNode, 1);
+              execution.readyToFireRules.put(betaNode, 1);
               continue;
             }
 
             execution = fireRule(betaNode, ctx, execution, APLContext);
+            execution.betaNodesList.remove(betaNode); //Remove the rule as this has already been fired
             if (!APLContext.decision.equals(AuthZDecision.INDETERMINATE)) {
               return execution;
             }
@@ -654,8 +654,9 @@ public class APLInterpreter <
     }
 
     /* Executing readyToFire Rules */
-    for (BetaNode betaNode : execution.firedRules.keySet()) {
+    for (BetaNode betaNode : execution.readyToFireRules.keySet()) {
       execution = fireRule(betaNode, ctx, execution, APLContext);
+      execution.readyToFireRules.remove(betaNode);
       if (!APLContext.decision.equals(AuthZDecision.INDETERMINATE)) {
         return execution;
       }
@@ -702,7 +703,7 @@ public class APLInterpreter <
     decisionExplanationObject.setTrueEvaluatedExpressions(execution.trueEvaluatedExpressions);
     decisionExplanationObject.setFiredRulesDescription(execution.firedRulesDescription);
     decisionExplanationObject.setNoOfConditions(totalNoOfConditions);
-    decisionExplanationObject.setNoOfUniqueConditions(expressionToAlphaNodesMap.size());
+    decisionExplanationObject.setNoOfUniqueConditions(alphaToBetaNodesMap.size());
     decisionExplanationObject.setNoOfActions(noOfActions);
     decisionExplanationObject.setNoOfExecutedActions(execution.noOfActionsFired);
     decisionExplanationObject.setNoOfRules(ruleDefinitions.size());
