@@ -25,9 +25,9 @@ public class APLEngine <
 
   private static Logger log = LoggerFactory.getLogger(APLEngine.class);
 
-  private APLInterpreter ruleEngine = null;
+  private APLInterpreter<Subject, Resource, Action, Environment, Obligation> ruleEngine = null;
 
-  public APLEngine(APLInterpreter ruleEngine) {
+  public APLEngine(APLInterpreter<Subject, Resource, Action, Environment, Obligation> ruleEngine) {
     this.ruleEngine = ruleEngine;
   }
 
@@ -44,11 +44,30 @@ public class APLEngine <
   private AuthZDecision executeAPLRules(Subject subject, Resource resource, Action action,
       Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results)
       throws IOException {
-	  AuthZDecision finaldecision = AuthZDecision.INDETERMINATE;
+    Execution execution = executeAPLRulesInternal(subject, resource, action, environment, request, obligationList, results);
+    return execution.decision;
+  }
+  
+  /**
+   * This is exposed for testing purposes
+   * 
+   * @param subject Subject/Actor
+   * @param resource Resource
+   * @param action Action being done on Resource
+   * @param environment Environment containing additional information in its attributes
+   * @param request
+   * @param obligationList If the action is executed the perform the required obligations
+   * @param results
+   * @return Execution object
+   * @throws IOException
+   */
+  Execution executeAPLRulesInternal(Subject subject, Resource resource, Action action,
+      Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results)
+      throws IOException {
+      AuthZDecision finaldecision = AuthZDecision.INDETERMINATE;
     Execution execution = ruleEngine.execute(subject, resource, action, environment, request, obligationList, results,
         finaldecision);
-    finaldecision = execution.decision;
-    return finaldecision;
+    return execution;
   }
 
   /**
