@@ -170,3 +170,9 @@ APL Explain :
 
 
         Rete Execute Process:
+	
+# Contributing
+For information on how to contribute to APL, please read through the [contributing guidelines](CONTRIBUTING.md).
+
+# License
+For information on license, please read through the [license](LICENSE).
