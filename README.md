@@ -1,6 +1,6 @@
 # ABAC Policy Language [![Build Status](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml/badge.svg)](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
    **_Secure, fast and reliable policies are protecting your resources_**
@@ -196,6 +196,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/ravichauhan03"><img src="https://avatars.githubusercontent.com/u/5583335?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ravichauhan03</b></sub></a><br /><a href="https://github.com/intuit/identity-authz-apl/commits?author=ravichauhan03" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/charugarg93"><img src="https://avatars.githubusercontent.com/u/31308623?v=4?s=100" width="100px;" alt=""/><br /><sub><b>charugarg93</b></sub></a><br /><a href="https://github.com/intuit/identity-authz-apl/commits?author=charugarg93" title="Code">💻</a></td>
   </tr>
 </table>
 
