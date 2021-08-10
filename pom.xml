@@ -6,8 +6,8 @@
     <packaging>jar</packaging>
     <name>ABAC Policy Language</name>
     <description>ABAC Policy Language is used by ABAC to author policies. A policy consists of rules, which have "when" conditions and "then" actions. Policies are executed in a bounded time, goaled to reach a decision as quickly as possible in deterministic, fast and reliable way. Further light-weight execution consumes minimal resources.</description>
-    <!--<version>1.0-SNAPSHOT</version>-->
-    <version>0.21</version>
+    <version>1.0-SNAPSHOT</version>
+    <!--<version>0.21</version>-->
     <url>https://github.com/intuit/identity-authz-apl</url>
     <licenses>
         <license>
