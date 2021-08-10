@@ -136,8 +136,10 @@ public class APLInterpreter <
   /**
    *
    * @param fileNames Files which will be parsed
+   * @param inputStream inputstream of rule file
    * @param debug control dumping of Rete tree
    * @param justParsingAndExecutionOfEngine without any checks, just parse and execute rules
+   * @param policyRepository a repository that can get the file if local filesystem does not contain policy file
    */
   public APLInterpreter(String[] fileNames, InputStream inputStream, boolean debug,
       boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository) {

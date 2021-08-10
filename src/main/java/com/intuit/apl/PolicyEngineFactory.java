@@ -83,7 +83,7 @@ public class PolicyEngineFactory {
   /**
    * Create a new engine with given configuration.
    * 
-   * @param PolicyEngineConfiguration policyEngineConfiguration configuration
+   * @param policyEngineConfiguration configuration
    * @return policy engine
    */
   public PolicyEngine createNewEngine(PolicyEngineConfiguration policyEngineConfiguration) {
