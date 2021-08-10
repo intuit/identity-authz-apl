@@ -1,7 +1,11 @@
-# ABAC Policy Language [![Build Status](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml/badge.svg)](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml)
+# ABAC Policy Language
+[![Build Status](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml/badge.svg)](https://github.com/intuit/identity-authz-apl/actions/workflows/maven.yml)
+[![Coverage](.github/badges/jacoco.svg)](https://github.com/USERNAME/REPOSITORY/actions/workflows/build.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+
 
    **_Secure, fast and reliable policies are protecting your resources_**
    
