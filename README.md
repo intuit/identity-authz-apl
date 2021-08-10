@@ -197,6 +197,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/ravichauhan03"><img src="https://avatars.githubusercontent.com/u/5583335?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ravichauhan03</b></sub></a><br /><a href="https://github.com/intuit/identity-authz-apl/commits?author=ravichauhan03" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/sachinmaheshwari"><img src="https://avatars.githubusercontent.com/u/10795268?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sachin Maheshwari</b></sub></a><br /><a href="https://github.com/intuit/identity-authz-apl/commits?author=sachinmaheshwari" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/raghuscgithub"><img src="https://avatars.githubusercontent.com/u/13479033?v=4?s=100" width="100px;" alt=""/><br /><sub><b>raghusc</b></sub></a><br /><a href="https://github.com/intuit/identity-authz-apl/commits?author=raghuscgithub" title="Code">💻</a></td>
   </tr>
 </table>
 
