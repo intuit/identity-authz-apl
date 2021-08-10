@@ -72,7 +72,7 @@
         <commons.pool2.version>2.6.1</commons.pool2.version>
         <apache_commons_lang3_version>3.8.1</apache_commons_lang3_version>
         <!-- OTHER VERSION -->
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <fest-reflect.version>1.4</fest-reflect.version>
         <lombok.version>1.16.22</lombok.version>
         <jackson.databind.version>2.9.5.redhat-001</jackson.databind.version>
@@ -98,7 +98,7 @@
         <maven.shade.plugin.version>2.4.3</maven.shade.plugin.version>
         <maven.site.plugin.version>3.3</maven.site.plugin.version>
         <google.guava.version>27.0.1-jre</google.guava.version>
-        <snake.version>1.24</snake.version>
+        <snake.version>1.26</snake.version>
         <mockito-core.version>2.10.0</mockito-core.version>
         <testng.version>6.14.3</testng.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
@@ -125,7 +125,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.23</version>
+            <version>${snake.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

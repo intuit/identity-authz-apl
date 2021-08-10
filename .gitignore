@@ -64,3 +64,6 @@ hs_err_pid*
 
 # intelliJ
 .idea
+
+#sample target
+samples/helloworld/target

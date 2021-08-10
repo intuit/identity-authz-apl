@@ -1,16 +1,13 @@
 package com.sample.apl;
 
+import com.intuit.apl.AuthZDecision;
 import com.intuit.apl.model.Result;
 import com.intuit.apl.PolicyEngineFactory;
 import com.intuit.apl.PolicyEngine;
-import com.intuit.identity.authz.sdk.model.Action;
-import com.intuit.identity.authz.sdk.model.AuthZDecision;
-import com.intuit.identity.authz.sdk.model.Environment;
-import com.intuit.identity.authz.sdk.model.Obligation;
-import com.intuit.identity.authz.sdk.model.Resource;
-import com.intuit.identity.authz.sdk.model.Subject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This Hello World demonstrates a sample APL and call to APL Policy Engine to decide on access control.
@@ -43,21 +40,22 @@ public class HelloWorld {
 				"com/intuit/authorization/my-product-rules.apl"
 		};
 
-		Environment environment = new Environment();
-		environment.setAttribute("product", "my-product");
-		environment.setAttribute("sku", "BASIC");
+		Map<String, String> environment = new HashMap<String, String>();
+        Map<String, String> resource = new HashMap<String, String>();
+        Map<String, String> subject = new HashMap<String, String>();
+        Map<String, String> action = new HashMap<String, String>();
+        List<Map<String, String>> obligationList = new ArrayList<>();
+        
+		environment.put("product", "my-product");
+		environment.put("sku", "BASIC");
 
-		Resource resource = new Resource();
-		resource.setAttribute("id", "CustomDetailedReport");
+		resource.put("id", "CustomDetailedReport");
 
-		Subject subject = new Subject();
-		subject.setAttribute("role", "admin");
+		subject.put("role", "admin");
 
-		Action action = new Action();
-		action.setAttribute("name", "execute");
+		action.put("name", "execute");
 
 		PolicyEngine policyEngine = null;
-		List<Obligation> obligationList = new ArrayList<Obligation>();
 
 		//2. Get a decision based on policy
 		try {
