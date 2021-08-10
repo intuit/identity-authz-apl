@@ -25,6 +25,7 @@ class Execution {
   Integer noOfRulesFired = 0;
   Integer noOfActionsFired = 0;
   Integer executionStepNo = 0;
+  int noOfConditionsEvaluated = 0;
   String expressionString = "";
   HashMap<BetaNode, Integer> conditionsTrue = new HashMap<>();
   LinkedHashMap<BetaNode, List<RuleDefinition>> betaNodesList = new LinkedHashMap<>();

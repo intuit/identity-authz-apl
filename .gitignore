@@ -1,3 +1,38 @@
+# Eclipse
+.classpath
+.project
+.settings/
+test-output/
+clients/auth/test/
+*dependency-reduced-pom.xml
+conf/
+log.out
+# Intellij
+.idea/
+*.iml
+*.iws
+*.ipr
+.factorypath
+
+# Mac
+.DS_Store
+
+# ms vscode
+.vscode/
+
+# Maven
+/log/
+target/
+
+# Spring
+/logs/
+
+# OIL
+OILLogs/
+
+# Python
+*.pyc
+
 # Compiled class file
 *.class
 
