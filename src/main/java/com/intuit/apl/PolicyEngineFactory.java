@@ -79,4 +79,26 @@ public class PolicyEngineFactory {
     logger.debug("Creating new ALPEngine");
     return new APLEngine(ruleEngine);
   }
+  
+  /**
+   * Create a new engine with given configuration.
+   * 
+   * @param PolicyEngineConfiguration policyEngineConfiguration configuration
+   * @return policy engine
+   */
+  public PolicyEngine createNewEngine(PolicyEngineConfiguration policyEngineConfiguration) {
+    if (ruleEngine == null) {
+      setUpRulesEngine();
+      if(null != policyEngineConfiguration) {
+        Object enableAI = policyEngineConfiguration.get(PolicyEngineConfiguration.ENABLE_AI);
+        if(null != enableAI && enableAI instanceof Boolean) {
+          if((Boolean)enableAI) {
+            ruleEngine.enableAI();
+          }
+        }
+      }
+    }
+    logger.debug("Creating new ALPEngine");
+    return new APLEngine(ruleEngine);
+  }
 }

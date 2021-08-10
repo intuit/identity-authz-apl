@@ -2,6 +2,7 @@ package com.intuit.apl.engine;
 
 import com.intuit.apl.AuthZDecision;
 import com.intuit.apl.PolicyEngine;
+import com.intuit.apl.PolicyEngineConfiguration;
 import com.intuit.apl.PolicyEngineFactory;
 import com.intuit.apl.engine.APLEngine;
 import com.intuit.apl.model.Result;
@@ -30,21 +31,44 @@ public class APLAITest
 		String[] ruleFiles = {
 				"com/intuit/authorization/ai.apl"
 		};
-		PolicyEngine<
-			Map<String, String>, 
-			Map<String, String>, 
-			Map<String, String>, 
-			Map<String, String>, 
-			Map<String, String>> 
-				policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
 		
-		Map<String, String> environment = new HashMap<String, String>();
-		Map<String, String> resource = new HashMap<String, String>();
-		Map<String, String> subject = new HashMap<String, String>();
-		Map<String, String> action = new HashMap<String, String>();
-		List<Map<String, String>> obligationList = new ArrayList<>();
 		
-		int noOfConditionsEvaluated = -1;
+        
+        PolicyEngine<
+        Map<String, String>, 
+        Map<String, String>, 
+        Map<String, String>, 
+        Map<String, String>, 
+        Map<String, String>> 
+            policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+        
+        long duration1 = runPerf(policyEngine);
+        
+     
+        PolicyEngineConfiguration policyEngineConfiguration = new PolicyEngineConfiguration();
+        policyEngineConfiguration.put(PolicyEngineConfiguration.ENABLE_AI, new Boolean(true));
+        policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine(policyEngineConfiguration);
+        
+        long duration2 = runPerf(policyEngine);
+        log.info("Times faster : "+1.0*duration1/duration2);
+	}
+        
+      private long runPerf(PolicyEngine<
+          Map<String, String>, 
+          Map<String, String>, 
+          Map<String, String>, 
+          Map<String, String>, 
+          Map<String, String>> 
+              policyEngine) 
+      {
+        
+        Map<String, String> environment = new HashMap<String, String>();
+        Map<String, String> resource = new HashMap<String, String>();
+        Map<String, String> subject = new HashMap<String, String>();
+        Map<String, String> action = new HashMap<String, String>();
+        List<Map<String, String>> obligationList = new ArrayList<>();
+        
+        int noOfConditionsEvaluated = -1;
 
         resource.put("r1", "r0");
         resource.put("r2", "r0");
@@ -54,7 +78,8 @@ public class APLAITest
         resource.put("r6", "r0");
         resource.put("r7", "r0");
         
-		for(int i=0; i< 1000; i++) {
+        long startTime = System.nanoTime();
+		for(int i=0; i< 10000; i++) {
 			try {
 				//AuthZDecision decision = policyEngine.decide(subject, resource, action, environment,  obligationList, new ArrayList<Result>());
 				Execution execution = ((APLEngine)policyEngine).executeAPLRulesInternal(subject, resource, action, environment, null, obligationList, new ArrayList<Result>());
@@ -67,6 +92,9 @@ public class APLAITest
 				log.error("Error running engine", e);
 			}
 		}
+		long duration = System.nanoTime() - startTime;
+		log.info("Time for perf run (ns) : "+duration);
+		return duration;
 	}
 
 }

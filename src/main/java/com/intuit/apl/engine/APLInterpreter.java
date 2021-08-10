@@ -131,7 +131,7 @@ public class APLInterpreter <
   private long endTimeForParse;
   
   private int executionsForStatsCollection = 100;
-  private AtomicInteger currentExecutionsForStatsCollection = new AtomicInteger(0);
+  private AtomicInteger currentExecutionsForStatsCollection = null;
 
   /**
    *
@@ -612,8 +612,8 @@ public class APLInterpreter <
 
     // Should we update the stats based execution
     Map<AlphaNode, List<BetaNode>> newAlphaToBetaNodesMap = null;
-    if (this.currentExecutionsForStatsCollection
-        .incrementAndGet() > this.executionsForStatsCollection) {
+    if (this.currentExecutionsForStatsCollection != null &&
+          this.currentExecutionsForStatsCollection.incrementAndGet() > this.executionsForStatsCollection) {
       this.currentExecutionsForStatsCollection.set(0);
       newAlphaToBetaNodesMap = new TreeMap<>();
     }
@@ -695,7 +695,9 @@ public class APLInterpreter <
           execution.falseEvaluatedExpressions.put(alphaNodeExpression.getExpressionString(),
               execution.executionStepNo++);
         } else if ((truthValue instanceof Boolean) && (Boolean) truthValue) {
-          entry.getKey().evaluatedTrue();
+          if(this.currentExecutionsForStatsCollection != null) {
+            entry.getKey().evaluatedTrue();
+          }
           execution.trueEvaluatedExpressions.put(alphaNodeExpression.getExpressionString(),
               execution.executionStepNo++);
           for (BetaNode betaNode : entry.getValue()) {
@@ -802,4 +804,9 @@ public int getExecutionsForStatsCollection() {
 public void setExecutionsForStatsCollection(int executionsForStatsCollection) {
 	this.executionsForStatsCollection = executionsForStatsCollection;
 }
+
+public void enableAI() {
+  currentExecutionsForStatsCollection = new AtomicInteger(0);
+}
+
 }
