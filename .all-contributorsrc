@@ -22,6 +22,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "baladutt",
+      "name": "Bala Dutt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2161684?v=4",
+      "profile": "https://www.linkedin.com/in/baladutt/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "sachinmaheshwari",
+      "name": "Sachin Maheshwari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10795268?v=4",
+      "profile": "https://github.com/sachinmaheshwari",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "raghuscgithub",
+      "name": "raghusc",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13479033?v=4",
+      "profile": "https://github.com/raghuscgithub",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
