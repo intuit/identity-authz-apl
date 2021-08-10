@@ -775,7 +775,7 @@ public class APLInterpreter <
         (execution.endTimeForRuleExecution - execution.startTimeForRuleExecution) / 1000;
     DecisionTrace decisionExplanationObject = new DecisionTrace();
     decisionExplanationObject.setContext(context);
-    decisionExplanationObject.setDecision(decision.name());
+    decisionExplanationObject.setDecision(execution.decision.name());
     decisionExplanationObject.setFalseEvaluatedExpressions(execution.falseEvaluatedExpressions);
     decisionExplanationObject.setTrueEvaluatedExpressions(execution.trueEvaluatedExpressions);
     decisionExplanationObject.setFiredRulesDescription(execution.firedRulesDescription);
