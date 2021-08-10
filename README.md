@@ -174,13 +174,6 @@ APL Explain :
 
         Rete Execute Process:
 
-# Contributors
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
-<!-- ALL-CONTRIBUTORS-BADGE:END --> 
-
-
 # Contributing
 For information on how to contribute to APL, please read through the [contributing guidelines](CONTRIBUTING.md).
 
@@ -190,6 +183,10 @@ For information on license, please read through the [license](LICENSE).
 
 
 ## Contributors ✨
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:END --> 
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
