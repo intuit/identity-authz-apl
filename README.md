@@ -45,7 +45,21 @@ When both the conditions are true, rule is said to fire. On firing of rule, acti
 
 This project demonstrates how the clients can use standalone policy engine.
 
-# How to run
+# How to use
+
+Include maven dependency for apl,
+
+```
+    <dependency>
+      <groupId>com.intuit.apl</groupId>
+      <artifactId>apl</artifactId>
+      <version>0.22</version>
+    </dependency>
+```
+
+The latest release is 0.22.
+
+# How to run sample helloworld
 
 ```
 cd samples/helloworld
