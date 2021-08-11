@@ -16,8 +16,9 @@
   <dependencies>
     <dependency>
       <groupId>com.intuit.apl</groupId>
-      <artifactId>apl</artifactId>
-      <version>0.21</version>
+      <artifactId>apl-core</artifactId>
+      <!--<version>0.21</version>-->
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
