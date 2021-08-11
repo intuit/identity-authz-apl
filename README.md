@@ -53,11 +53,11 @@ Include maven dependency for apl,
     <dependency>
       <groupId>com.intuit.apl</groupId>
       <artifactId>apl-core</artifactId>
-      <version>0.22</version>
+      <version>0.23</version>
     </dependency>
 ```
 
-The latest release is 0.22.
+The latest release is 0.23.
 
 # How to run sample helloworld
 
