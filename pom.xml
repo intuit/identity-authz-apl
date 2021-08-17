@@ -39,6 +39,18 @@
             <organization>Intuit, Inc.</organization>
             <organizationUrl>http://www.intuit.com</organizationUrl>
         </developer>
+        <developer>
+            <name>Raghavendra SC</name>
+            <id>raghuscgithub</id>
+            <organization>Intuit, Inc.</organization>
+            <organizationUrl>http://www.intuit.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Charu Garg</name>
+            <id>charugarg93</id>
+            <organization>Intuit, Inc.</organization>
+            <organizationUrl>http://www.intuit.com</organizationUrl>
+        </developer>
     </developers>
     <distributionManagement>
         <snapshotRepository>
