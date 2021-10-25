@@ -255,7 +255,7 @@ class ParsingRules {
         try {
           throw e;
         } catch (Exception ex) {
-          ex.printStackTrace();
+          logger.error("Error reading rule file", e);
         }
       } finally {
         try {
@@ -263,7 +263,7 @@ class ParsingRules {
             inStream.close();
           }
         } catch (IOException e) {
-          e.printStackTrace();
+          logger.error("Error closing file object", e);
         }
 
       }

@@ -869,8 +869,7 @@ public class APLEngineTest {
 		AuthZDecision decision = policyEngine.decide(subject, resource, action, environment, request, obligationList,
 				new ArrayList<Result>());
 		assertEquals(AuthZDecision.DENY, decision);
-		System.out.println(obligationList.toString());
-
+		log.info(obligationList.toString());
 	}
 
 	@Test
@@ -891,14 +890,14 @@ public class APLEngineTest {
 		AuthZDecision decision = policyEngine.decide(subject, resource, action, environment, request, obligationList,
 				new ArrayList<Result>());
 		assertEquals(AuthZDecision.DENY, decision);
-		System.out.println(obligationList.toString());
+		log.info(obligationList.toString());
 
 		subject.put("role", "bef,pqr");
 
 		decision = policyEngine.decide(subject, resource, action, environment, request, obligationList,
 				new ArrayList<Result>());
 		assertEquals(AuthZDecision.PERMIT, decision);
-		System.out.println(obligationList.toString());
+		log.info(obligationList.toString());
 	}
 
 }
