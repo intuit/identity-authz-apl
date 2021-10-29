@@ -1,10 +1,13 @@
 package com.intuit.apl.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 class TestMakingOwnFunctions {
+    private static Logger logger = LoggerFactory.getLogger(TestMakingOwnFunctions.class);
 
     public static void  main(String[] args) throws NoSuchMethodException {
         ExpressionParser parser = new SpelExpressionParser();
@@ -12,7 +15,7 @@ class TestMakingOwnFunctions {
 
         seContext.registerFunction("getStringLen",Myclass.class.getDeclaredMethod("getmyLen",String.class));
         Integer len =  parser.parseExpression("#getStringLen('concretepage.com')").getValue(seContext, Integer.class);
-        System.out.println(len);
+        logger.info("Length: "+ len);
     }
 }
 
