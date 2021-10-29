@@ -28,6 +28,7 @@ import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.StringUtils;
+import org.springframework.expression.EvaluationException;
 
 /**
  * ABAC based policy language interpreter. This interprets APL files and executes them when needed.
@@ -522,6 +523,9 @@ public class APLInterpreter <
   private void isValidExpression(StandardEvaluationContext context, Expression expr) {
     try {
       expr.getValue(context);
+    } catch (EvaluationException evalEx) {
+      throw new RuntimeException("Exception = " + evalEx.getMessage()
+          + " occured while evaluation of the expression : " + expr.getExpressionString());
     } catch (Exception ex) {
       throw new RuntimeException("Invalid function name or incorrect number of arguments passed: "
           + expr.getExpressionString());
