@@ -446,25 +446,4 @@ class Context <
     results.add(result);
     return new MyList(result.getResult());
   }
-
-  class ContextBuilder{
-
-    Context context = new Context();
-    ContextBuilder withSubject(Subject subject){
-      context.subject = context.sub = context.s = subject;
-      return this;
-    }
-    ContextBuilder withResource(Resource resource){
-      context.resource = context.res = context.r = resource;
-      return this;
-    }
-    ContextBuilder withAction(Action action){
-      context.action = context.a = action;
-      return this;
-    }
-    ContextBuilder withEnvironment(Environment environment){
-      context.environment = context.env = context.e = environment;
-      return this;
-    }
-  }
 }
