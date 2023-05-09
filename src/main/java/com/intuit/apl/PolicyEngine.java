@@ -50,8 +50,11 @@ public abstract class PolicyEngine <
       List<Obligation> obligationList, List<Result> results) {
     return "";
   }
-  
-  /**
+
+    public abstract AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment,
+                                         Response response, List<Result> results);
+
+    /**
    * Makes authorization decision based on policies and rules within them. One engine encompasses
    * one set of policy files. Typically one resource will have a mapping to one policy engine. There
    * can be many executions on one engine.
@@ -67,6 +70,9 @@ public abstract class PolicyEngine <
    */
   public abstract AuthZDecision decide(Subject subject, Resource resource, Action action,
       Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results);
+
+  public abstract AuthZDecision decide(Subject subject, Resource resource, Action action,
+      Environment environment,  Map<String, Object> request, Response response, List<Result> results);
 
   /**
    * Makes authorization decision based on policies and rules within them. One engine encompasses

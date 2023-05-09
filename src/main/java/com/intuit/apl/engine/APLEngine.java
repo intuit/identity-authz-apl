@@ -2,6 +2,7 @@ package com.intuit.apl.engine;
 
 import com.intuit.apl.AuthZDecision;
 import com.intuit.apl.PolicyEngine;
+import com.intuit.apl.Response;
 import com.intuit.apl.model.Result;
 
 import java.io.IOException;
@@ -42,9 +43,9 @@ public class APLEngine <
    * @return AuthZDecision
    */
   private AuthZDecision executeAPLRules(Subject subject, Resource resource, Action action,
-      Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results)
+      Environment environment,  Map<String, Object> request, Response response, List<Result> results)
       throws IOException {
-    Execution execution = executeAPLRulesInternal(subject, resource, action, environment, request, obligationList, results);
+    Execution execution = executeAPLRulesInternal(subject, resource, action, environment, request, response, results);
     return execution.decision;
   }
   
@@ -62,11 +63,20 @@ public class APLEngine <
    * @throws IOException
    */
   Execution executeAPLRulesInternal(Subject subject, Resource resource, Action action,
-      Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results)
+      Environment environment,  Map<String, Object> request, Response response, List<Result> results)
       throws IOException {
       AuthZDecision finaldecision = AuthZDecision.INDETERMINATE;
-    Execution execution = ruleEngine.execute(subject, resource, action, environment, request, obligationList, results,
+    Execution execution = ruleEngine.execute(subject, resource, action, environment, request, response, results,
         finaldecision);
+    return execution;
+  }
+
+  Execution executeAPLRulesInternal(Subject subject, Resource resource, Action action,
+                                    Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results)
+          throws IOException {
+    AuthZDecision finaldecision = AuthZDecision.INDETERMINATE;
+    Execution execution = ruleEngine.execute(subject, resource, action, environment, request, obligationList, results,
+            finaldecision);
     return execution;
   }
 
@@ -110,14 +120,14 @@ public class APLEngine <
   @Override
   public AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment,
       List<Obligation> obligationList, List<Result> results) {
-    try {
-      return executeAPLRules(subject, resource, action, environment, null, obligationList, results);
-    } catch (IOException e) {
-      log.error("Exception running policy", e);
-    }
-    return AuthZDecision.INDETERMINATE;
+    return decide(subject, resource, action, environment, null, obligationList, results);
   }
-  
+
+  @Override
+  public AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment,
+                              Response response, List<Result> results) {
+    return decide(subject, resource, action, environment, null, response, results);
+  }
   /**
    * The main decide call to get decision.
    *
@@ -130,11 +140,23 @@ public class APLEngine <
    * @return AuthZDecision
    */
   @Override
-  public AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment,  Map<String, Object> request,
+  public AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
       List<Obligation> obligationList, List<Result> results) {
     try {
-      return executeAPLRules(subject, resource, action, environment, request, obligationList, results);
-    } catch (IOException e) {
+      return ruleEngine.execute(subject, resource, action, environment, request, obligationList, results, AuthZDecision.INDETERMINATE).decision;
+//      return executeAPLRules(subject, resource, action, environment, request, response, results);
+    } catch (Exception e) {
+      log.error("Exception running policy", e);
+    }
+    return AuthZDecision.INDETERMINATE;
+  }
+
+  @Override
+  public AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
+                              Response response, List<Result> results) {
+    try {
+      return ruleEngine.execute(subject, resource, action, environment, request, response, results, AuthZDecision.INDETERMINATE).decision;
+    } catch (Exception e) {
       log.error("Exception running policy", e);
     }
     return AuthZDecision.INDETERMINATE;
@@ -154,12 +176,7 @@ public class APLEngine <
   @Override
   public String explain(Subject subject, Resource resource, Action action, Environment environment,
       List<Obligation> obligationList, List<Result> results) {
-    try {
-      return explainAPLRules(subject, resource, action, environment, null, obligationList, results);
-    } catch (Exception e) {
-      log.error("Exception running policy", e);
-      throw new IllegalArgumentException("Cant be parsed");
-    }
+    return explain(subject, resource, action, environment, null, obligationList, results);
   }
   
  
@@ -180,7 +197,8 @@ public class APLEngine <
   public String explain(Subject subject, Resource resource, Action action, Environment environment,  Map<String, Object> request,
       List<Obligation> obligationList, List<Result> results) {
     try {
-      return explainAPLRules(subject, resource, action, environment, request, obligationList, results);
+      return ruleEngine.executeWithExplanation(subject, resource, action, environment, request, obligationList,
+              results, AuthZDecision.INDETERMINATE);
     } catch (Exception e) {
       log.error("Exception running policy", e);
       throw new IllegalArgumentException("Cant be parsed");

@@ -1,6 +1,7 @@
 package com.intuit.apl.engine;
 
 import com.intuit.apl.AuthZDecision;
+import com.intuit.apl.Response;
 import com.intuit.apl.model.Result;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,11 @@ class Context <
   public AuthZDecision deny = AuthZDecision.DENY;
   public AuthZDecision indeterminate = AuthZDecision.INDETERMINATE;
   public Map<String, Object> request = new HashMap<>();
+  public Response response;
+
+  private Context(){
+
+  }
 
   /**
    * This is primary constructor.
@@ -77,6 +83,15 @@ class Context <
   Context(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
       List<Obligation> obligationList, List<Result> results, AuthZDecision decision) {
     this(subject, resource, action, environment, obligationList, results, decision);
+    if(null != request) {
+      this.request = request;
+    }
+  }
+
+  Context(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
+          Response response, List<Result> results, AuthZDecision decision) {
+    this(subject, resource, action, environment, (List<Obligation>) response.getObligations(), results, decision);
+    this.response = response;
     if(null != request) {
       this.request = request;
     }
@@ -411,9 +426,45 @@ class Context <
     return new MyMap(obligation);
   }
 
+  public MyMap newAdvice() {
+    Map<String, String> advice = new HashMap<>();
+    response.getAdvices().add(advice);
+    return new MyMap(advice);
+  }
+  public MyMap newRemediation() {
+    Map<String, String> remediation = new HashMap<>();
+    response.getRemediations().add(remediation);
+    return new MyMap(remediation);
+  }
+  public MyMap newCause() {
+    Map<String, String> cause = new HashMap<>();
+    response.getCauses().add(cause);
+    return new MyMap(cause);
+  }
   public MyList newResult() {
     Result result = new Result();
     results.add(result);
     return new MyList(result.getResult());
+  }
+
+  class ContextBuilder{
+
+    Context context = new Context();
+    ContextBuilder withSubject(Subject subject){
+      context.subject = context.sub = context.s = subject;
+      return this;
+    }
+    ContextBuilder withResource(Resource resource){
+      context.resource = context.res = context.r = resource;
+      return this;
+    }
+    ContextBuilder withAction(Action action){
+      context.action = context.a = action;
+      return this;
+    }
+    ContextBuilder withEnvironment(Environment environment){
+      context.environment = context.env = context.e = environment;
+      return this;
+    }
   }
 }

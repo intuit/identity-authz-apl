@@ -3,6 +3,7 @@ package com.intuit.apl.engine;
 
 import com.intuit.apl.AuthZDecision;
 import com.intuit.apl.PolicyRepository;
+import com.intuit.apl.Response;
 import com.intuit.apl.model.Result;
 
 import java.io.InputStream;
@@ -203,10 +204,17 @@ public class APLInterpreter <
    * @param decision Deny/Permit decision
    */
   Execution execute(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
-      List<Obligation> obligationList, List<Result> results, final AuthZDecision decision) {
-    return executeInternal(subject, resource, action, environment, request, obligationList, results, decision,
-        false);
+      Response response, List<Result> results, final AuthZDecision decision) {
+    Context context = getContext(subject, resource, action, environment, request, response, results, decision);
+    return executeInternal(context, false);
   }
+
+  Execution execute(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
+                    List<Obligation> obligationList, List<Result> results, final AuthZDecision decision) {
+    Context context = getContext(subject, resource, action, environment, request, obligationList, results, decision);
+    return executeInternal(context, false);
+  }
+
 
   /**
    *
@@ -222,9 +230,16 @@ public class APLInterpreter <
   String executeWithExplanation(Subject subject, Resource resource, Action action,
       Environment environment, Map<String, Object> request, List<Obligation> obligationList, List<Result> results,
       AuthZDecision decision) {
+    Context context = getContext(subject, resource, action, environment, request, obligationList, results, decision);
+    Execution execution = executeInternal(context, true);
+    return execution.expressionString;
+  }
 
-    Execution execution = executeInternal(subject, resource, action, environment, request, obligationList,
-        results, decision, true);
+  String executeWithExplanation(Subject subject, Resource resource, Action action,
+                                Environment environment, Map<String, Object> request, Response response, List<Result> results,
+                                AuthZDecision decision) {
+    Context context = getContext(subject, resource, action, environment, request, response, results, decision);
+    Execution execution =  executeInternal(context, true);
     return execution.expressionString;
   }
 
@@ -389,19 +404,40 @@ public class APLInterpreter <
    * @param explanationRequired A boolean telling if the explain output to be shown or not
    * @return Execution object
    */
-  private Execution executeInternal(Subject subject, Resource resource, Action action,
-      Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results,
-      final AuthZDecision decision, boolean explanationRequired) {
-	  resource = resource == null? (Resource) new HashMap<String, String>() : resource;
-	  subject = subject == null? (Subject) new HashMap<String, String>() : subject;
-	  final Action actionLocalFinalReference = action = action == null? (Action) new HashMap<String, String>() : action;
-	  environment = environment == null? (Environment) new HashMap<String, String>() : environment;
-	  request = request == null? new HashMap<String, Object>() : request;
-	  obligationList = obligationList == null? new ArrayList<Obligation>() : obligationList;
-	  results = results == null? new ArrayList<Result>() : results;
-	  
-    Context context =
-        new Context(subject, resource, action, environment, request, obligationList, results, decision);
+  private Context getContext(Subject subject, Resource resource, Action action,
+                             Environment environment, Map<String, Object> request, Response response, List<Result> results,
+                             final AuthZDecision decision){
+    resource = resource == null? (Resource) new HashMap<String, String>() : resource;
+    subject = subject == null? (Subject) new HashMap<String, String>() : subject;
+    final Action actionLocalFinalReference = action = action == null? (Action) new HashMap<String, String>() : action;
+    environment = environment == null? (Environment) new HashMap<String, String>() : environment;
+    request = request == null? new HashMap<String, Object>() : request;
+    response = response == null? new Response() : response;
+    results = results == null? new ArrayList<Result>() : results;
+
+    return new Context(subject, resource, action, environment, request, response, results, decision);
+  }
+
+  private Context getContext(Subject subject, Resource resource, Action action,
+                             Environment environment, Map<String, Object> request, List<Obligation> obligationList, List<Result> results,
+                             final AuthZDecision decision){
+    resource = resource == null? (Resource) new HashMap<String, String>() : resource;
+    subject = subject == null? (Subject) new HashMap<String, String>() : subject;
+    final Action actionLocalFinalReference = action = action == null? (Action) new HashMap<String, String>() : action;
+    environment = environment == null? (Environment) new HashMap<String, String>() : environment;
+    request = request == null? new HashMap<String, Object>() : request;
+    obligationList = obligationList == null? new ArrayList<Obligation>() : obligationList;
+    results = results == null? new ArrayList<Result>() : results;
+
+    return new Context(subject, resource, action, environment, request, obligationList, results, decision);
+  }
+
+  private Execution executeInternal(Context context, boolean explanationRequired) {
+
+    Action action = (Action) context.getAction();
+    AuthZDecision decision = context.decision;
+    Environment environment = (Environment) context.getEnvironment();
+
     final Execution execution = new Execution();
 
     if (useRete) {
@@ -413,7 +449,7 @@ public class APLInterpreter <
       }
       if (isNotEmpty(actionIds)) {
         Arrays.stream(actionIds)
-            .anyMatch(actionId -> checkIfNotAllow(actionLocalFinalReference, decision, context, execution, actionId));
+                .anyMatch(actionId -> checkIfNotAllow(action, decision, context, execution, actionId));
       } else {
         reteExecute(execution, context, decision);
       }
@@ -425,7 +461,7 @@ public class APLInterpreter <
 
     /* If explanation is required then the variables are added to the list */
     if (explanationRequired
-        || "true".equalsIgnoreCase(environment.get("explain_apl"))) {
+            || "true".equalsIgnoreCase(environment.get("explain_apl"))) {
 
       execution.endTimeForExecution = System.nanoTime();
 
