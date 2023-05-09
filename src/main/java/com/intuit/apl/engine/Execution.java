@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import com.intuit.apl.AuthZDecision;
-
+import com.intuit.apl.Response;
 
 
 /**
@@ -36,4 +36,5 @@ class Execution {
   /* Rules ordered by salience */
   PriorityQueue<Integer> prioritySalienceRules = null;
   AuthZDecision decision = AuthZDecision.INDETERMINATE;
+  Response response;
 }

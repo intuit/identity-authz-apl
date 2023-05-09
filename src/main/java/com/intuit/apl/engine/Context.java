@@ -39,10 +39,6 @@ class Context <
   public Map<String, Object> request = new HashMap<>();
   public Response response;
 
-  private Context(){
-
-  }
-
   /**
    * This is primary constructor.
    * The objects passed are made available to APL policy file.
@@ -76,18 +72,10 @@ class Context <
    * @param action Action
    * @param environment Environment
    * @param request Request
-   * @param obligationList Obligation list
+   * @param response Response
    * @param results Results
    * @param decision AuthZDecision
    */
-  Context(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
-      List<Obligation> obligationList, List<Result> results, AuthZDecision decision) {
-    this(subject, resource, action, environment, obligationList, results, decision);
-    if(null != request) {
-      this.request = request;
-    }
-  }
-
   Context(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
           Response response, List<Result> results, AuthZDecision decision) {
     this(subject, resource, action, environment, (List<Obligation>) response.getObligations(), results, decision);

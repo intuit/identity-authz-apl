@@ -12,9 +12,17 @@ public class Response {
     private List<Map<String, String>> advices;
     private List<Map<String, String>> remediations;
 
+    public Response(AuthZDecision authZDecision){
+        this();
+        this.decision = authZDecision;
+    }
 
     public Response(){
         this(null, null, null, null);
+    }
+
+    public Response(List<Map<String, String>> obligations){
+        this(obligations, null, null, null);
     }
 
     public Response(List<Map<String, String>> obligations, List<Map<String, String>> causes, List<Map<String, String>> advices, List<Map<String, String>> remediations){

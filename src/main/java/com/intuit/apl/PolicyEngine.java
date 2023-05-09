@@ -28,8 +28,10 @@ public abstract class PolicyEngine <
    * @return Decision decision made as per policies
    */
   public abstract AuthZDecision decide(Subject subject, Resource resource, Action action,
-      Environment environment,  List<Obligation> obligationList, List<Result> results);
+      Environment environment, List<Obligation> obligationList, List<Result> results);
 
+  public abstract Response decide(Subject subject, Resource resource, Action action, Environment environment,
+     List<Result> results);
   /**
    * Makes authorization decision based on policies and rules within them. One engine encompasses
    * one set of policy files. Typically one resource will have a mapping to one policy engine. There
@@ -51,8 +53,10 @@ public abstract class PolicyEngine <
     return "";
   }
 
-    public abstract AuthZDecision decide(Subject subject, Resource resource, Action action, Environment environment,
-                                         Response response, List<Result> results);
+  public String explain(Subject subject, Resource resource, Action action, Environment environment,
+                        List<Result> results) {
+      return "";
+  }
 
     /**
    * Makes authorization decision based on policies and rules within them. One engine encompasses
@@ -71,8 +75,8 @@ public abstract class PolicyEngine <
   public abstract AuthZDecision decide(Subject subject, Resource resource, Action action,
       Environment environment,  Map<String, Object> request, List<Obligation> obligationList, List<Result> results);
 
-  public abstract AuthZDecision decide(Subject subject, Resource resource, Action action,
-      Environment environment,  Map<String, Object> request, Response response, List<Result> results);
+  public abstract Response decide(Subject subject, Resource resource, Action action,
+      Environment environment,  Map<String, Object> request, List<Result> results);
 
   /**
    * Makes authorization decision based on policies and rules within them. One engine encompasses
@@ -93,6 +97,11 @@ public abstract class PolicyEngine <
    */
   public String explain(Subject subject, Resource resource, Action action, Environment environment,  Map<String, Object> request,
       List<Obligation> obligationList, List<Result> results) {
+    return "";
+  }
+
+  public String explain(Subject subject, Resource resource, Action action, Environment environment,  Map<String, Object> request,
+                        List<Result> results) {
     return "";
   }
 }

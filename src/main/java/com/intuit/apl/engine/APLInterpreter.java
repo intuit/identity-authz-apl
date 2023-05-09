@@ -204,14 +204,16 @@ public class APLInterpreter <
    * @param decision Deny/Permit decision
    */
   Execution execute(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
-      Response response, List<Result> results, final AuthZDecision decision) {
+      List<Result> results, final AuthZDecision decision) {
+    Response response = new Response();
     Context context = getContext(subject, resource, action, environment, request, response, results, decision);
     return executeInternal(context, false);
   }
 
   Execution execute(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
                     List<Obligation> obligationList, List<Result> results, final AuthZDecision decision) {
-    Context context = getContext(subject, resource, action, environment, request, obligationList, results, decision);
+    Response response = new Response((List<Map<String, String>>) obligationList);
+    Context context = getContext(subject, resource, action, environment, request, response, results, decision);
     return executeInternal(context, false);
   }
 
@@ -230,14 +232,16 @@ public class APLInterpreter <
   String executeWithExplanation(Subject subject, Resource resource, Action action,
       Environment environment, Map<String, Object> request, List<Obligation> obligationList, List<Result> results,
       AuthZDecision decision) {
-    Context context = getContext(subject, resource, action, environment, request, obligationList, results, decision);
+    Response response = new Response((List<Map<String, String>>) obligationList);
+    Context context = getContext(subject, resource, action, environment, request, response, results, decision);
     Execution execution = executeInternal(context, true);
     return execution.expressionString;
   }
 
   String executeWithExplanation(Subject subject, Resource resource, Action action,
-                                Environment environment, Map<String, Object> request, Response response, List<Result> results,
+                                Environment environment, Map<String, Object> request, List<Result> results,
                                 AuthZDecision decision) {
+    Response response = new Response();
     Context context = getContext(subject, resource, action, environment, request, response, results, decision);
     Execution execution =  executeInternal(context, true);
     return execution.expressionString;
@@ -418,20 +422,6 @@ public class APLInterpreter <
     return new Context(subject, resource, action, environment, request, response, results, decision);
   }
 
-  private Context getContext(Subject subject, Resource resource, Action action,
-                             Environment environment, Map<String, Object> request, List<Obligation> obligationList, List<Result> results,
-                             final AuthZDecision decision){
-    resource = resource == null? (Resource) new HashMap<String, String>() : resource;
-    subject = subject == null? (Subject) new HashMap<String, String>() : subject;
-    final Action actionLocalFinalReference = action = action == null? (Action) new HashMap<String, String>() : action;
-    environment = environment == null? (Environment) new HashMap<String, String>() : environment;
-    request = request == null? new HashMap<String, Object>() : request;
-    obligationList = obligationList == null? new ArrayList<Obligation>() : obligationList;
-    results = results == null? new ArrayList<Result>() : results;
-
-    return new Context(subject, resource, action, environment, request, obligationList, results, decision);
-  }
-
   private Execution executeInternal(Context context, boolean explanationRequired) {
 
     Action action = (Action) context.getAction();
@@ -543,7 +533,7 @@ public class APLInterpreter <
     for (Expression expr : DefaultActionExpressions) {
       expr.getValue(context);
       if (!context.decision.equals(AuthZDecision.INDETERMINATE)) {
-        execution.decision = context.decision;
+        setResponseInExecution(execution, context);
         /* We have some decision we return */
         return;
       }
@@ -627,8 +617,7 @@ public class APLInterpreter <
       /* As soon as we have decision we are done */
       /* Allow non-decision rules */
       if (!APLContext.decision.equals(AuthZDecision.INDETERMINATE)) {
-    	  
-        execution.decision = APLContext.decision;
+        setResponseInExecution(execution, APLContext);
 
         /* PolicyFile Execution time ends at this point */
         execution.endTimeForRuleExecution = System.nanoTime();
@@ -833,22 +822,28 @@ public class APLInterpreter <
         timeElapsedForConditionExecution, timeElapsedForRuleExecution);
   }
 
-/**
- * @return the executionsForStatsCollection
- */
-public int getExecutionsForStatsCollection() {
-	return executionsForStatsCollection;
-}
+  /**
+   * @return the executionsForStatsCollection
+   */
+  public int getExecutionsForStatsCollection() {
+      return executionsForStatsCollection;
+  }
 
-/**
- * @param executionsForStatsCollection the executionsForStatsCollection to set
- */
-public void setExecutionsForStatsCollection(int executionsForStatsCollection) {
-	this.executionsForStatsCollection = executionsForStatsCollection;
-}
+  /**
+   * @param executionsForStatsCollection the executionsForStatsCollection to set
+   */
+  public void setExecutionsForStatsCollection(int executionsForStatsCollection) {
+      this.executionsForStatsCollection = executionsForStatsCollection;
+  }
 
-public void enableAI() {
+  public void enableAI() {
   currentExecutionsForStatsCollection = new AtomicInteger(0);
 }
+
+  private void setResponseInExecution(Execution execution, Context context){
+    execution.decision = context.decision;
+    execution.response = context.response;
+    execution.response.setDecision(context.decision);
+  }
 
 }
