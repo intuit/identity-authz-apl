@@ -437,7 +437,7 @@ public class APLInterpreter <
       }
       if (isNotEmpty(actionIds)) {
         Arrays.stream(actionIds)
-                .anyMatch(actionId -> checkIfNotAllow(action, decision, context, execution, actionId));
+              .anyMatch(actionId -> checkIfNotAllow(action, decision, context, execution, actionId));
       } else {
         reteExecute(execution, context, decision);
       }
