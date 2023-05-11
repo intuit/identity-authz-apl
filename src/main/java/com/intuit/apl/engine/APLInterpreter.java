@@ -205,8 +205,7 @@ public class APLInterpreter <
    */
   Execution execute(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
       List<Result> results, final AuthZDecision decision) {
-    Response response = new Response();
-    Context context = getContext(subject, resource, action, environment, request, response, results, decision);
+    Context context = getContext(subject, resource, action, environment, request, null, results, decision);
     return executeInternal(context, false);
   }
 
@@ -241,8 +240,7 @@ public class APLInterpreter <
   String executeWithExplanation(Subject subject, Resource resource, Action action,
                                 Environment environment, Map<String, Object> request, List<Result> results,
                                 AuthZDecision decision) {
-    Response response = new Response();
-    Context context = getContext(subject, resource, action, environment, request, response, results, decision);
+    Context context = getContext(subject, resource, action, environment, request, null, results, decision);
     Execution execution =  executeInternal(context, true);
     return execution.expressionString;
   }
@@ -468,6 +466,7 @@ public class APLInterpreter <
       execution.expressionString = generateExplanation(context, decision, execution, AllVariables);
       logger.info(execution.expressionString);
     }
+    setResponseInExecution(execution, context);
     return execution;
   }
 
@@ -533,7 +532,7 @@ public class APLInterpreter <
     for (Expression expr : DefaultActionExpressions) {
       expr.getValue(context);
       if (!context.decision.equals(AuthZDecision.INDETERMINATE)) {
-        setResponseInExecution(execution, context);
+        execution.decision = context.decision;
         /* We have some decision we return */
         return;
       }
@@ -617,7 +616,7 @@ public class APLInterpreter <
       /* As soon as we have decision we are done */
       /* Allow non-decision rules */
       if (!APLContext.decision.equals(AuthZDecision.INDETERMINATE)) {
-        setResponseInExecution(execution, APLContext);
+        execution.decision = APLContext.decision;
 
         /* PolicyFile Execution time ends at this point */
         execution.endTimeForRuleExecution = System.nanoTime();
@@ -841,7 +840,6 @@ public class APLInterpreter <
 }
 
   private void setResponseInExecution(Execution execution, Context context){
-    execution.decision = context.decision;
     execution.response = context.response;
     execution.response.setDecision(context.decision);
   }

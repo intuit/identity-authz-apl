@@ -1,6 +1,6 @@
 package com.intuit.apl;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,10 +26,10 @@ public class Response {
     }
 
     public Response(List<Map<String, String>> obligations, List<Map<String, String>> causes, List<Map<String, String>> advices, List<Map<String, String>> remediations){
-        this.obligations = obligations == null ? new ArrayList<>() : obligations;
-        this.causes = causes == null ? new ArrayList<>() : causes;
-        this.advices = advices == null ? new ArrayList<>() : advices;
-        this.remediations = remediations == null ? new ArrayList<>() : remediations;
+        this.obligations = obligations == null ? new LinkedList<>() : obligations;
+        this.causes = causes == null ? new LinkedList<>() : causes;
+        this.advices = advices == null ? new LinkedList<>() : advices;
+        this.remediations = remediations == null ? new LinkedList<>() : remediations;
     }
 
     public List<Map<String, String>> getAdvices() {
