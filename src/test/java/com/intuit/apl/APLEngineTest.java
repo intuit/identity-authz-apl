@@ -2,13 +2,12 @@ package com.intuit.apl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.testng.annotations.Test;
 
 import com.intuit.apl.model.Result;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -96,6 +95,150 @@ public class APLEngineTest {
 		AuthZDecision decision = policyEngine.decide(subject, resource, action, environment, obligationList,
 				new ArrayList<Result>());
 		assertEquals(AuthZDecision.DENY, decision);
+
+	}
+
+	@Test
+	public void testDenyWithResponse() {
+		String[] ruleFiles = { "com/intuit/authorization/qbo-rules-v2.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		environment.put("product", "QBO");
+		environment.put("sku", "BASIC");
+
+		resource.put("id", "CustomDetailedReport");
+
+		subject.put("role", "admin");
+
+		action.put("name", "execute");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment,
+				new ArrayList<Result>());
+		assertEquals(AuthZDecision.DENY, response.getDecision());
+		assertEquals(1, response.getObligations().size());
+		assertEquals(3, response.getObligations().get(0).size());
+		assertEquals(0, response.getAdvices().size());
+		assertEquals(0, response.getCauses().size());
+		assertEquals(0, response.getRemediations().size());
+		assertEquals("deny", response.getObligations().get(0).get("decision"));
+		assertEquals("Deny CustomDetailedReport for QBO Basic", response.getObligations().get(0).get("rule"));
+		assertEquals("audit", response.getObligations().get(0).get("id"));
+	}
+
+	@Test
+	public void testDenyWithResponseWithData() {
+		String[] ruleFiles = { "com/intuit/authorization/qbo-rules-v2.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		environment.put("product", "QBO");
+		environment.put("sku", "PLUS");
+
+		resource.put("id", "CustomDetailedReportWithRemediation");
+
+		subject.put("role", "admin");
+
+		action.put("name", "execute");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment,
+				new ArrayList<Result>());
+		assertEquals(AuthZDecision.DENY, response.getDecision());
+		assertEquals(1, response.getObligations().size());
+		assertEquals(3, response.getObligations().get(0).size());
+		assertEquals(1, response.getAdvices().size());
+		assertEquals(1, response.getAdvices().get(0).size());
+		assertEquals(1, response.getCauses().size());
+		assertEquals(1, response.getCauses().get(0).size());
+		assertEquals(1, response.getRemediations().size());
+		assertEquals(1, response.getRemediations().get(0).size());
+		assertEquals("deny", response.getObligations().get(0).get("decision"));
+		assertEquals("Deny CustomDetailedReport for QBO Basic", response.getObligations().get(0).get("rule"));
+		assertEquals("audit", response.getObligations().get(0).get("id"));
+		assertEquals("role=admin", response.getAdvices().get(0).get("advice"));
+		assertEquals("role have no permission", response.getCauses().get(0).get("cause"));
+		assertEquals("invalid role", response.getRemediations().get(0).get("remediation"));
+	}
+
+	@Test
+	public void testDenyWithResponseWithMultipleData() {
+		String[] ruleFiles = { "com/intuit/authorization/qbo-rules-v2.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		environment.put("product", "QBO");
+		environment.put("sku", "PLUS");
+
+		resource.put("id", "CustomDetailedReportWithMultipleRemediation");
+
+		subject.put("role", "admin");
+
+		action.put("name", "execute");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment,
+				new ArrayList<Result>());
+		assertEquals(AuthZDecision.DENY, response.getDecision());
+		assertEquals(2, response.getObligations().size());
+		assertEquals(3, response.getObligations().get(0).size());
+		assertEquals(2, response.getAdvices().size());
+		assertEquals(1, response.getAdvices().get(0).size());
+		assertEquals(2, response.getCauses().size());
+		assertEquals(1, response.getCauses().get(0).size());
+		assertEquals(2, response.getRemediations().size());
+		assertEquals(1, response.getRemediations().get(0).size());
+		assertEquals("deny", response.getObligations().get(0).get("decision"));
+		assertEquals("Deny CustomDetailedReport for QBO Basic", response.getObligations().get(0).get("rule"));
+		assertEquals("audit", response.getObligations().get(0).get("id"));
+		assertEquals("role=admin", response.getAdvices().get(0).get("advice"));
+		assertEquals("role have no permission", response.getCauses().get(0).get("cause"));
+		assertEquals("invalid role", response.getRemediations().get(0).get("remediation"));
+
+		assertEquals(3, response.getObligations().get(1).size());
+		assertEquals(1, response.getAdvices().get(1).size());
+		assertEquals(1, response.getCauses().get(1).size());
+		assertEquals(1, response.getRemediations().get(1).size());
+		assertEquals("deny", response.getObligations().get(1).get("decision"));
+		assertEquals("Deny CustomDetailedReport for QBO Basic1", response.getObligations().get(1).get("rule"));
+		assertEquals("audit1", response.getObligations().get(1).get("id"));
+		assertEquals("role=admin1", response.getAdvices().get(1).get("advice1"));
+		assertEquals("role have no permission1", response.getCauses().get(1).get("cause1"));
+		assertEquals("invalid role1", response.getRemediations().get(1).get("remediation1"));
+	}
+
+	@Test
+	public void testDenyWithResponseWithIndeterminate() {
+		String[] ruleFiles = { "com/intuit/authorization/qbo-rules-v2.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		environment.put("product", "QBO");
+		environment.put("sku", "PLUS");
+
+		resource.put("id", "Non-matching");
+
+		subject.put("role", "admin");
+
+		action.put("name", "execute");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment,
+				new ArrayList<Result>());
+		assertEquals(AuthZDecision.INDETERMINATE, response.getDecision());
+		assertEquals(0, response.getObligations().size());
+		assertEquals(0, response.getAdvices().size());
+		assertEquals(0, response.getCauses().size());
+		assertEquals(0, response.getRemediations().size());
 
 	}
 
@@ -700,6 +843,43 @@ public class APLEngineTest {
 			long duration = (System.nanoTime() - startTime) / 1000;
 			String explanation = policyEngine.explain(subject, resource, action, environment,
 					obligationList, new ArrayList<Result>());
+			log.info(explanation);
+		} catch (Exception e) {
+			log.error("Error running engine", e);
+		}
+
+	}
+
+	@Test
+	public void testExplainWithResponse() {
+		String[] ruleFiles = { "com/intuit/authorization/qbo-rules.apl" };
+
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		environment.put("product", "QBO");
+		environment.put("sku", "BASIC");
+
+		resource.put("id", "CustomDetailedReport");
+
+		subject.put("role", "admin");
+
+		action.put("name", "execute");
+
+		try {
+			PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+			for (int i = 0; i < 1000; i++) {
+				policyEngine.decide(subject, resource, action, environment,
+						new ArrayList<Result>());
+			}
+			long startTime = System.nanoTime();
+			policyEngine.decide(subject, resource, action, environment,
+					new ArrayList<Result>());
+			long duration = (System.nanoTime() - startTime) / 1000;
+			String explanation = policyEngine.explain(subject, resource, action, environment,
+					new ArrayList<Result>());
 			log.info(explanation);
 		} catch (Exception e) {
 			log.error("Error running engine", e);
