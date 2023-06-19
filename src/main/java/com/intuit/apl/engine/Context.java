@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
 
@@ -248,6 +249,41 @@ class Context <
       }
     }
     return true;
+  }
+
+  public boolean verifyRequest(){
+    return verifyRequest(subject) && verifyRequest(resource) && verifyRequest(action) && verifyRequest(environment);
+  }
+
+  private boolean verifyRequest(Map<String, String> map){
+    if(CollectionUtils.isEmpty(map)){
+      return true;
+    }
+
+    Map<String, String> verifyMap = getPrefixMap(map, "verify_");
+
+    for(Map.Entry<String, String> entry : verifyMap.entrySet()){
+      String verifyKey = entry.getKey();
+      if(!map.containsKey(verifyKey)){
+        return false;
+      }
+      String value = map.get(verifyKey);
+      String regex = entry.getValue();
+      ArrayList<String> regexList = (ArrayList<String>) Arrays.asList(regex);
+      if(!containsAny(regexList, value) && !matchRegex(entry.getValue(), map.get(verifyKey))){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private Map<String, String> getPrefixMap(Map<String, String> map, String prefix){
+    return map.entrySet().stream().filter(entry -> entry.getKey().startsWith(prefix))
+            .collect(Collectors.toMap(entry -> entry.getKey().replaceFirst(prefix, ""), Map.Entry::getValue));
+  }
+
+  private boolean matchRegex(String regex, String value){
+    return Pattern.compile(regex).matcher(value).matches();
   }
 
   public boolean isAttrSet(String category, String attributeName) {
