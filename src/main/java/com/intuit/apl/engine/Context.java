@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.intuit.apl.engine.Constant.VERIFY_PREFIX;
+
 /**
  * The context on which conditions are evaluated Contains the following 1. Subject 2. Resource 3.
  * Action 4. Environment 5. Obligation List 6. AuthZDecision
@@ -261,7 +263,7 @@ class Context <
       return true;
     }
 
-    Map<String, String> verifyMap = getPrefixMap(map, "verify_");
+    Map<String, String> verifyMap = getPrefixMap(map, VERIFY_PREFIX);
 
     for(Map.Entry<String, String> entry : verifyMap.entrySet()){
       String verifyKey = entry.getKey();
