@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * The context on which conditions are evaluated Contains the following 1. Subject 2. Resource 3.
@@ -267,10 +268,10 @@ class Context <
       if(!map.containsKey(verifyKey)){
         return false;
       }
-      String value = map.get(verifyKey);
-      String regex = entry.getValue();
-      ArrayList<String> regexList = (ArrayList<String>) Arrays.asList(regex);
-      if(!containsAny(regexList, value) && !matchRegex(entry.getValue(), map.get(verifyKey))){
+      if(map.get(verifyKey) == null){
+        return false;
+      }
+      if(!matchRegex(entry.getValue(), map.get(verifyKey))){
         return false;
       }
     }
@@ -279,6 +280,7 @@ class Context <
 
   private Map<String, String> getPrefixMap(Map<String, String> map, String prefix){
     return map.entrySet().stream().filter(entry -> entry.getKey().startsWith(prefix))
+            .filter(entry -> StringUtils.hasText(entry.getValue()))
             .collect(Collectors.toMap(entry -> entry.getKey().replaceFirst(prefix, ""), Map.Entry::getValue));
   }
 
