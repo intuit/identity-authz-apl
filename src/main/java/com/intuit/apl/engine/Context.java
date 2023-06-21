@@ -9,8 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import static com.intuit.apl.engine.Constant.VERIFY_PREFIX;
 
 /**
  * The context on which conditions are evaluated Contains the following 1. Subject 2. Resource 3.
@@ -248,6 +252,46 @@ class Context <
       }
     }
     return true;
+  }
+
+  public boolean verifyRequest(){
+    return verifyRequest(subject) && verifyRequest(resource) && verifyRequest(action) && verifyRequest(environment);
+  }
+
+  private boolean verifyRequest(Map<String, String> map){
+    if(CollectionUtils.isEmpty(map)){
+      return true;
+    }
+
+    Map<String, String> verifyMap = getPrefixMap(map, VERIFY_PREFIX);
+
+    for(Map.Entry<String, String> entry : verifyMap.entrySet()){
+      String verifyKey = entry.getKey();
+      if(!map.containsKey(verifyKey)){
+        return false;
+      }
+      if(map.get(verifyKey) == null){
+        return false;
+      }
+      if(!matchRegex(entry.getValue(), map.get(verifyKey))){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private Map<String, String> getPrefixMap(Map<String, String> map, String prefix){
+    return map.entrySet().stream().filter(entry -> entry.getKey().startsWith(prefix))
+            .filter(entry -> StringUtils.hasText(entry.getValue()))
+            .collect(Collectors.toMap(entry -> entry.getKey().replaceFirst(prefix, ""), Map.Entry::getValue));
+  }
+
+  private boolean matchRegex(String regex, String value){
+    try {
+      return Pattern.compile(regex).matcher(value).matches();
+    }catch(Exception e){
+      return false;
+    }
   }
 
   public boolean isAttrSet(String category, String attributeName) {

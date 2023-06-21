@@ -48,5 +48,6 @@ public class Constant {
   public static final String NOTAPPLICABLEDECISION = "NOT_APPLICABLE";
   public static final String INDETERMINATEEDECISION = "INDETERMINATE";
 
+  public static final String VERIFY_PREFIX="verify_";
 
 }
