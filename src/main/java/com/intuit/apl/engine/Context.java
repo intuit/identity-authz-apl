@@ -287,7 +287,11 @@ class Context <
   }
 
   private boolean matchRegex(String regex, String value){
-    return Pattern.compile(regex).matcher(value).matches();
+    try {
+      return Pattern.compile(regex).matcher(value).matches();
+    }catch(Exception e){
+      return false;
+    }
   }
 
   public boolean isAttrSet(String category, String attributeName) {
