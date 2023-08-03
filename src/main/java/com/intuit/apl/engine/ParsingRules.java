@@ -1,5 +1,15 @@
 package com.intuit.apl.engine;
 
+import com.intuit.apl.PolicyRepository;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.Expression;
@@ -8,19 +18,13 @@ import org.springframework.expression.spel.SpelParserConfiguration;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.CollectionUtils;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import com.intuit.apl.PolicyRepository;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 /**
  * This class parses all the rule files
  */
 class ParsingRules {
 
-  private static Logger logger = LoggerFactory.getLogger(ParsingRules.class);
+  private static final Logger logger = LoggerFactory.getLogger(ParsingRules.class);
   private PriorityQueue<RuleDefinition> ruleDefinitions;
   private PriorityQueue<RuleDefinition> testDefinitions;
   private QuotaConfigurationProperties quotaConfigurationProperties;
@@ -32,13 +36,13 @@ class ParsingRules {
   private List<Expression> defaultActionExpressions;
 
   ParsingRules(QuotaConfigurationProperties quotaConfigurationProperties, boolean debug,
-      List<Expression> DefaultActionExpressions) {
+      List<Expression> defaultActionExpressions) {
     this.quotaConfigurationProperties = quotaConfigurationProperties;
     this.debug = debug;
     this.actionsCheck = 0;
     this.conditionsCheck = 0;
     this.numberOfDefaultRules = 0;
-    this.defaultActionExpressions = DefaultActionExpressions;
+    this.defaultActionExpressions = defaultActionExpressions;
   }
 
   SpelExpressionParser getParser() {
@@ -235,7 +239,7 @@ class ParsingRules {
           logger.info("There has to be only 1 default rule");
 
         /* Processing imports */
-        ArrayList<String> importedFileNames = new ArrayList<String>();
+        ArrayList<String> importedFileNames = new ArrayList<>();
         for (String importClassOrPackage : rulePackage.getImports()) {
           if (importClassOrPackage.endsWith(".*")) {
             /* Collect filenames */
@@ -246,7 +250,7 @@ class ParsingRules {
             evaluatedFiles.addAll(importedFileNames);
           }
         }
-        if (importedFileNames.size() > 0) {
+        if (!importedFileNames.isEmpty()) {
           loadRuleFiles(importedFileNames.toArray(new String[0]), inputStream, new RulePackage(),
               yaml, policyRepository);
         }
@@ -275,37 +279,13 @@ class ParsingRules {
    *
    * @param fileNames File names of the apl files Parsing PolicyFile files
    */
-  // void parseRuleFiles(String[] fileNames, InputStream fileRepository){
-  // Yaml yaml = new Yaml();
-  // RulePackage rulePackage = new RulePackage();
-  //
-  // if(null == ruleDefinitions) {
-  // Comparator<RuleDefinition> priorityComparator = new Comparator<RuleDefinition>() {
-  // @Override
-  // public int compare(RuleDefinition rd1, RuleDefinition rd2) {
-  // return rd2.getSalience() - rd1.getSalience();
-  // }
-  // };
-  // ruleDefinitions = new PriorityQueue<>(priorityComparator);
-  // SpelParserConfiguration config = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE,
-  // this.getClass().getClassLoader());
-  // parser = new SpelExpressionParser(config);
-  // }
-  // loadRuleFiles(fileNames, inputStream, rulePackage, yaml);
-  // }
-  //
   void parseRuleFiles(String[] fileNames, InputStream inputStream,
       PolicyRepository policyRepository) {
-    Yaml yaml = new Yaml(new Constructor(HashMap.class));
+    Yaml yaml = new Yaml();
     RulePackage rulePackage = new RulePackage();
 
     if (null == ruleDefinitions) {
-      Comparator<RuleDefinition> priorityComparator = new Comparator<RuleDefinition>() {
-        @Override
-        public int compare(RuleDefinition rd1, RuleDefinition rd2) {
-          return rd2.getSalience() - rd1.getSalience();
-        }
-      };
+      Comparator<RuleDefinition> priorityComparator = (rd1, rd2) -> rd2.getSalience() - rd1.getSalience();
       ruleDefinitions = new PriorityQueue<>(priorityComparator);
       SpelParserConfiguration config =
           new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, this.getClass().getClassLoader());
