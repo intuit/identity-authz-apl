@@ -107,11 +107,11 @@ mvn exec:java -Dexec.mainClass=com.sample.apl.HelloWorld
 
 # Details
 
-[Sample rule file](samples/helloworld/src/main/resources/com/intuit/authorization/qbo-rules.apl)
+[Sample rule file](samples/helloworld/src/main/resources/com/intuit/authorization/my-product-rules.apl)
 
 [Another sample rule file](samples/helloworld/src/main/resources/com/intuit/authorization/common/user.apl)
 
-[Source code for main Java class](samples/helloworld/src/main/java/com/intuit/authorization/HelloWorld.java)
+[Source code for main Java class](samples/helloworld/src/main/java/com/sample/apl/HelloWorld.java)
 
 ## Explain
     APL engine can be asked to explain a policy execution. This explanation provides insights into the policy. Below is a sample explaination.
