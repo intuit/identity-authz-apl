@@ -11,6 +11,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <slf4j.api.version>1.7.30</slf4j.api.version>
   </properties>
 
   <dependencies>
@@ -19,6 +20,11 @@
       <artifactId>apl-core</artifactId>
       <!--<version>0.23</version>-->
       <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.api.version}</version>
     </dependency>
   </dependencies>
 </project>
