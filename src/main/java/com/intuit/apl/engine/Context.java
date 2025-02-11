@@ -42,6 +42,7 @@ class Context <
   public AuthZDecision indeterminate = AuthZDecision.INDETERMINATE;
   public Map<String, Object> request = new HashMap<>();
   public Response response;
+  public ContextFunctions cf;
 
   /**
    * This is primary constructor.
@@ -160,7 +161,7 @@ class Context <
     }
     return false;
   }
-  
+
   public boolean matchesAnyIgnoreCase(ArrayList<String> source, String target) {
 		String[] targetStrElements = target.split(",");
 		if (targetStrElements.length == 0 || source.size() == 0) {
@@ -178,7 +179,7 @@ class Context <
 		}
 		return false;
   }
-  
+
 
   public static boolean equalsIgnoreCase(final String str1, final String str2) {
     if (str1 == null || str2 == null) {
@@ -391,7 +392,7 @@ class Context <
     // returning a default folder id for a fileId
     return "0";
   }
-  
+
   public int parseInt(String intStr) {
 	  return Integer.parseInt(intStr);
   }
@@ -478,4 +479,5 @@ class Context <
     results.add(result);
     return new MyList(result.getResult());
   }
+
 }

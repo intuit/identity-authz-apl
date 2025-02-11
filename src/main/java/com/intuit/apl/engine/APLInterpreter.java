@@ -70,7 +70,7 @@ public class APLInterpreter <
    */
 
   private static Logger logger = LoggerFactory.getLogger(APLInterpreter.class);
-  
+
   static class AlphaNode implements Comparable{
 	  private final Expression expression;
 	  int trueInvocations = 0;
@@ -134,7 +134,12 @@ public class APLInterpreter <
   
   private int executionsForStatsCollection = 100;
   private AtomicInteger currentExecutionsForStatsCollection = null;
+  final private ContextFunctions contextFunctions;
 
+  public APLInterpreter(String[] fileNames, InputStream inputStream, boolean debug,
+                        boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository) {
+    this(fileNames, inputStream, debug, justParsingAndExecutionOfEngine, policyRepository, null);
+  }
   /**
    *
    * @param fileNames Files which will be parsed
@@ -144,7 +149,9 @@ public class APLInterpreter <
    * @param policyRepository a repository that can get the file if local filesystem does not contain policy file
    */
   public APLInterpreter(String[] fileNames, InputStream inputStream, boolean debug,
-      boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository) {
+      boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository, ContextFunctions contextFunctions) {
+
+    this.contextFunctions = contextFunctions;
     this.debug = debug;
 
     String debugStr = System.getProperty(DEBUG_SYSTEM_PROPERTY);
@@ -417,7 +424,9 @@ public class APLInterpreter <
     response = response == null? new Response() : response;
     results = results == null? new ArrayList<Result>() : results;
 
-    return new Context(subject, resource, action, environment, request, response, results, decision);
+    Context context =  new Context(subject, resource, action, environment, request, response, results, decision);
+    context.cf = contextFunctions;
+    return context;
   }
 
   private Execution executeInternal(Context context, boolean explanationRequired) {

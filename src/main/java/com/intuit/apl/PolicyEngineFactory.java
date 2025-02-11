@@ -4,6 +4,8 @@ import com.intuit.apl.engine.APLEngine;
 import com.intuit.apl.engine.APLInterpreter;
 import com.intuit.apl.engine.ClassPathPolicyRepository;
 import java.io.InputStream;
+
+import com.intuit.apl.engine.ContextFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,8 @@ public class PolicyEngineFactory {
 
   private PolicyRepository policyRepository = new ClassPathPolicyRepository();
 
+  private ContextFunctions contextFunctions;
+
   public PolicyEngineFactory(String[] fileNames) {
     this.fileNames = fileNames;
   }
@@ -37,6 +41,11 @@ public class PolicyEngineFactory {
   public PolicyEngineFactory(String[] fileNames, InputStream inputStream) {
     this(fileNames);
     this.inputStream = inputStream;
+  }
+
+  public PolicyEngineFactory(String[] fileNames, InputStream inputStream, ContextFunctions contextFunctions) {
+    this(fileNames, inputStream);
+    this.contextFunctions = contextFunctions;
   }
 
   public PolicyEngineFactory(String[] fileNames, PolicyRepository policyRepository) {
@@ -64,7 +73,7 @@ public class PolicyEngineFactory {
    */
   private synchronized void setUpRulesEngine() {
     ruleEngine = new APLInterpreter(this.fileNames, inputStream, debug,
-        justParsingAndExecutionOfEngine, this.policyRepository);
+        justParsingAndExecutionOfEngine, this.policyRepository, contextFunctions);
   }
 
   /**
@@ -79,7 +88,7 @@ public class PolicyEngineFactory {
     logger.debug("Creating new ALPEngine");
     return new APLEngine(ruleEngine);
   }
-  
+
   /**
    * Create a new engine with given configuration.
    * 
