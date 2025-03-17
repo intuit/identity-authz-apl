@@ -42,7 +42,7 @@ class Context <
   public AuthZDecision indeterminate = AuthZDecision.INDETERMINATE;
   public Map<String, Object> request = new HashMap<>();
   public Response response;
-  public ContextFunctions cf;
+  public CustomFunctions cf;
 
   /**
    * This is primary constructor.
@@ -88,6 +88,12 @@ class Context <
     if(null != request) {
       this.request = request;
     }
+  }
+
+  Context(Subject subject, Resource resource, Action action, Environment environment, Map<String, Object> request,
+          Response response, List<Result> results, AuthZDecision decision, CustomFunctions customFunctions) {
+    this(subject, resource, action, environment, request, response, results, decision);
+    this.cf = customFunctions;
   }
 
   public void setSubject(Map<String, String> subject) {

@@ -134,12 +134,8 @@ public class APLInterpreter <
   
   private int executionsForStatsCollection = 100;
   private AtomicInteger currentExecutionsForStatsCollection = null;
-  final private ContextFunctions contextFunctions;
+  final private CustomFunctions customFunctions;
 
-  public APLInterpreter(String[] fileNames, InputStream inputStream, boolean debug,
-                        boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository) {
-    this(fileNames, inputStream, debug, justParsingAndExecutionOfEngine, policyRepository, null);
-  }
   /**
    *
    * @param fileNames Files which will be parsed
@@ -149,9 +145,9 @@ public class APLInterpreter <
    * @param policyRepository a repository that can get the file if local filesystem does not contain policy file
    */
   public APLInterpreter(String[] fileNames, InputStream inputStream, boolean debug,
-      boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository, ContextFunctions contextFunctions) {
+      boolean justParsingAndExecutionOfEngine, PolicyRepository policyRepository, CustomFunctions customFunctions) {
 
-    this.contextFunctions = contextFunctions;
+    this.customFunctions = customFunctions;
     this.debug = debug;
 
     String debugStr = System.getProperty(DEBUG_SYSTEM_PROPERTY);
@@ -424,9 +420,7 @@ public class APLInterpreter <
     response = response == null? new Response() : response;
     results = results == null? new ArrayList<Result>() : results;
 
-    Context context =  new Context(subject, resource, action, environment, request, response, results, decision);
-    context.cf = contextFunctions;
-    return context;
+    return new Context(subject, resource, action, environment, request, response, results, decision, customFunctions);
   }
 
   private Execution executeInternal(Context context, boolean explanationRequired) {
