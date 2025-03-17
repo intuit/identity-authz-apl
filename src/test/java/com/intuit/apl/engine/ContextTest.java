@@ -349,4 +349,13 @@ public class ContextTest {
 
         Assert.assertFalse(flag);
     }
+
+    @Test
+    public void testConstructorWithCustomFunction(){
+        Response response = new Response();
+        CustomFunctions customFunctions = new CustomFunctions() { };
+        Context context = new Context<>(null, null, null, null, null, response, null, null, customFunctions);
+
+        Assert.assertEquals(customFunctions, context.cf);
+    }
 }
