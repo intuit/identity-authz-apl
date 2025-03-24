@@ -3,7 +3,6 @@ package com.intuit.apl;
 import com.intuit.apl.engine.CustomFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 import org.testng.annotations.Test;
 
 import com.intuit.apl.model.Result;
@@ -1093,7 +1092,7 @@ public class APLEngineTest {
 		resource.put("id", "CustomDetailedReportWithRemediation");
 		resource.put("isValid", "true");
 
-		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles, null, new CustomFunctionImpl())).createNewEngine();
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles, null, new TestCustomFunction())).createNewEngine();
 		Response response = policyEngine.decide(subject, resource, action, environment, new ArrayList<Result>());
 		assertEquals(AuthZDecision.PERMIT, response.getDecision());
 	}
@@ -1109,7 +1108,7 @@ public class APLEngineTest {
 		resource.put("id", "CustomDetailedReportWithRemediation");
 		resource.put("isValid", "false");
 
-		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles, null, new CustomFunctionImpl())).createNewEngine();
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles, null, new TestCustomFunction())).createNewEngine();
 		Response response = policyEngine.decide(subject, resource, action, environment, new ArrayList<Result>());
 		assertEquals(AuthZDecision.DENY, response.getDecision());
 	}
@@ -1130,7 +1129,7 @@ public class APLEngineTest {
 		assertEquals(AuthZDecision.INDETERMINATE, response.getDecision());
 	}
 
-	static class CustomFunctionImpl implements CustomFunctions {
+	static class TestCustomFunction implements CustomFunctions {
 
 		public boolean isValid(Map<String, String> resource){
 			String isValid = resource.get("isValid");

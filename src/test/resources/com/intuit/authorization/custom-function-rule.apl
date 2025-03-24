@@ -1,5 +1,5 @@
 rule: Custom Function permit
-description: Allow CustomDetailedReport for QBO Plus
+description: Test APL Custom Function, return permit if resource.isValid == true
 salience: 11
 when:
   - cf.isValid(resource)
@@ -9,7 +9,7 @@ then:
 ---
 
 rule: Custom Function deny
-description: Allow CustomDetailedReport for QBO Plus
+description: Test APL Custom Function, return deny if resource.isValid == false
 salience: 11
 when:
   - cf.isValid(resource) == false
