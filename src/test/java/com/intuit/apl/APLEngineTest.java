@@ -1,8 +1,8 @@
 package com.intuit.apl;
 
+import com.intuit.apl.engine.CustomFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 import org.testng.annotations.Test;
 
 import com.intuit.apl.model.Result;
@@ -1079,6 +1079,62 @@ public class APLEngineTest {
 				new ArrayList<Result>());
 		assertEquals(AuthZDecision.PERMIT, decision);
 		System.out.println(obligationList.toString());
+	}
+
+	@Test
+	public void testPermitWithCustomFunction() {
+		String[] ruleFiles = { "com/intuit/authorization/custom-function-rule.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		resource.put("id", "CustomDetailedReportWithRemediation");
+		resource.put("isValid", "true");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles, null, new TestCustomFunction())).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment, new ArrayList<Result>());
+		assertEquals(AuthZDecision.PERMIT, response.getDecision());
+	}
+
+	@Test
+	public void testDenyWithCustomFunction() {
+		String[] ruleFiles = { "com/intuit/authorization/custom-function-rule.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		resource.put("id", "CustomDetailedReportWithRemediation");
+		resource.put("isValid", "false");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles, null, new TestCustomFunction())).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment, new ArrayList<Result>());
+		assertEquals(AuthZDecision.DENY, response.getDecision());
+	}
+
+	@Test
+	public void testIndeterminatedWithCustomFunction() {
+		String[] ruleFiles = { "com/intuit/authorization/custom-function-rule.apl" };
+		Map<String, String> environment = new HashMap<String, String>();
+		Map<String, String> resource = new HashMap<String, String>();
+		Map<String, String> subject = new HashMap<String, String>();
+		Map<String, String> action = new HashMap<String, String>();
+
+		resource.put("id", "CustomDetailedReportWithRemediation");
+		resource.put("isValid", "false");
+
+		PolicyEngine policyEngine = (new PolicyEngineFactory(ruleFiles)).createNewEngine();
+		Response response = policyEngine.decide(subject, resource, action, environment, new ArrayList<Result>());
+		assertEquals(AuthZDecision.INDETERMINATE, response.getDecision());
+	}
+
+	static class TestCustomFunction implements CustomFunctions {
+
+		public boolean isValid(Map<String, String> resource){
+			String isValid = resource.get("isValid");
+			return "true".equals(isValid);
+		}
 	}
 
 }
