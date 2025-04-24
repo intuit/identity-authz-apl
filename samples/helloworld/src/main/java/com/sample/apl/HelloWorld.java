@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Hello World demonstrates a sample APL and call to APL Policy Engine to decide on access control.
@@ -30,6 +32,7 @@ import java.util.Map;
  *
  */
 public class HelloWorld {
+	static Logger logger = LoggerFactory.getLogger(HelloWorld.class);
 
 	public static void main(String[] args) {
 		
@@ -64,8 +67,7 @@ public class HelloWorld {
 			System.out.println(decision);
 			System.out.println(obligationList);
 		} catch (Exception e) {
-			System.out.println("Error running hello world: "+e.getMessage());
-			e.printStackTrace();
+			logger.error("Error running hello world: "+e.getMessage(), e);
 			return;
 		}
 		
@@ -75,18 +77,16 @@ public class HelloWorld {
 				policyEngine.decide( subject, resource, action,environment, obligationList, new ArrayList<Result>());
 			}
 		} catch (Exception e) {
-			System.out.println("Error warming up hello world: "+e.getMessage());
-			e.printStackTrace();
+			logger.error("Error warming up hello world: "+e.getMessage(), e);
 			return;
 		}
 		
 		//4. Explain the policy and execution to provide insights
 		try {
 			String explanation = policyEngine.explain( subject, resource, action,environment, obligationList, new ArrayList<Result>());
-			System.out.println(explanation);
+			logger.info(explanation);
 		} catch (Exception e) {
-			System.out.println("Error explaining hello world: "+e.getMessage());
-			e.printStackTrace();
+			logger.error("Error explaining hello world: "+e.getMessage(), e);
 		}
 	}
 }
